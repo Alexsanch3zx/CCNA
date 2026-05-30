@@ -45,12 +45,14 @@ This lab expands a basic network of 4 PCs connected to a switch into a small bus
 
 # VLAN Design
 
-| VLAN | Name | Network |
-|------|------|----------|
-| 10 | HR | 192.168.10.0/24 |
-| 20 | Sales | 192.168.20.0/24 |
-| 30 | Servers | 192.168.30.0/24 |
-| 40 | Printers | 192.168.40.0/24 |
+
+| VLAN | Name     | Network         |
+| ---- | -------- | --------------- |
+| 10   | HR       | 192.168.10.0/24 |
+| 20   | Sales    | 192.168.20.0/24 |
+| 30   | Servers  | 192.168.30.0/24 |
+| 40   | Printers | 192.168.40.0/24 |
+
 
 ---
 
@@ -58,35 +60,43 @@ This lab expands a basic network of 4 PCs connected to a switch into a small bus
 
 ## HR
 
-| Device | IP Address |
-|----------|----------|
-| PC0 | 192.168.10.10 |
-| PC1 | 192.168.10.11 |
+
+| Device | IP Address    |
+| ------ | ------------- |
+| PC0    | 192.168.10.10 |
+| PC1    | 192.168.10.11 |
+
 
 Gateway: 192.168.10.1
 
 ## Sales
 
-| Device | IP Address |
-|----------|----------|
-| PC2 | 192.168.20.10 |
-| PC3 | 192.168.20.11 |
+
+| Device | IP Address    |
+| ------ | ------------- |
+| PC2    | 192.168.20.10 |
+| PC3    | 192.168.20.11 |
+
 
 Gateway: 192.168.20.1
 
 ## Server
 
-| Device | IP Address |
-|----------|----------|
+
+| Device  | IP Address    |
+| ------- | ------------- |
 | Server0 | 192.168.30.10 |
+
 
 Gateway: 192.168.30.1
 
 ## Printer
 
-| Device | IP Address |
-|----------|----------|
+
+| Device   | IP Address    |
+| -------- | ------------- |
 | Printer0 | 192.168.40.10 |
+
 
 Gateway: 192.168.40.1
 

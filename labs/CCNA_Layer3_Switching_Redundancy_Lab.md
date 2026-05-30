@@ -50,12 +50,14 @@ The small office lab uses a **router-on-a-stick** for inter-VLAN routing. This l
 
 # VLAN Design
 
-| VLAN | Name | Subnet (IPv4) | Gateway (SVI) |
-|------|------|---------------|---------------|
-| 10 | DATA | 10.10.10.0/24 | 10.10.10.1 on DLSW1, .2 on DLSW2 (HSRP optional) |
-| 20 | VOICE | 10.10.20.0/24 | 10.10.20.1 / .2 |
-| 30 | MGMT | 10.10.30.0/24 | 10.10.30.1 / .2 |
-| 99 | NATIVE | (trunk only) | — |
+
+| VLAN | Name   | Subnet (IPv4) | Gateway (SVI)                                    |
+| ---- | ------ | ------------- | ------------------------------------------------ |
+| 10   | DATA   | 10.10.10.0/24 | 10.10.10.1 on DLSW1, .2 on DLSW2 (HSRP optional) |
+| 20   | VOICE  | 10.10.20.0/24 | 10.10.20.1 / .2                                  |
+| 30   | MGMT   | 10.10.30.0/24 | 10.10.30.1 / .2                                  |
+| 99   | NATIVE | (trunk only)  | —                                                |
+
 
 For simplicity, use **DLSW1** as the active gateway (.1) on each SVI. DLSW2 can have standby IPs if you add HSRP (stretch goal).
 
@@ -63,14 +65,16 @@ For simplicity, use **DLSW1** as the active gateway (.1) on each SVI. DLSW2 can 
 
 # IP Addressing (Examples)
 
-| Device | VLAN | IPv4 Address | IPv6 (optional) |
-|--------|------|--------------|-----------------|
-| PC1 | 10 | 10.10.10.10/24 | 2001:db8:10::10/64 |
-| PC2 | 20 | 10.10.20.10/24 | 2001:db8:20::10/64 |
-| PC3 | 30 | 10.10.30.10/24 | — |
-| PC4 | 10 | 10.10.10.11/24 | — |
-| PC5 | 20 | 10.10.20.11/24 | — |
-| R1 g0/0 | — | 10.10.255.1/24 | — |
+
+| Device  | VLAN | IPv4 Address   | IPv6 (optional)    |
+| ------- | ---- | -------------- | ------------------ |
+| PC1     | 10   | 10.10.10.10/24 | 2001:db8:10::10/64 |
+| PC2     | 20   | 10.10.20.10/24 | 2001:db8:20::10/64 |
+| PC3     | 30   | 10.10.30.10/24 | —                  |
+| PC4     | 10   | 10.10.10.11/24 | —                  |
+| PC5     | 20   | 10.10.20.11/24 | —                  |
+| R1 g0/0 | —    | 10.10.255.1/24 | —                  |
+
 
 **DHCP pools on R1** (or Server):
 
@@ -409,12 +413,14 @@ STP not converged, or PortFast on a trunk by mistake. Verify root bridge and blo
 
 # How This Lab Complements the Small Office Lab
 
-| Topic | Small Office Lab | This Lab |
-|-------|------------------|----------|
-| Inter-VLAN routing | Router-on-a-stick | MLS + SVI |
-| Routing protocol | None | Optional static to R1 |
-| Redundancy | Single trunk | EtherChannel + STP |
-| DHCP | On router | Central server + relay |
-| IPv6 | No | Yes (intro) |
+
+| Topic              | Small Office Lab  | This Lab               |
+| ------------------ | ----------------- | ---------------------- |
+| Inter-VLAN routing | Router-on-a-stick | MLS + SVI              |
+| Routing protocol   | None              | Optional static to R1  |
+| Redundancy         | Single trunk      | EtherChannel + STP     |
+| DHCP               | On router         | Central server + relay |
+| IPv6               | No                | Yes (intro)            |
+
 
 Complete all three labs for broader hands-on coverage before the exam.
