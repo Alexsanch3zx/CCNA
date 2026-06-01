@@ -9,7 +9,7 @@
 
 | Term                  | Meaning                                                                                        |
 | --------------------- | ---------------------------------------------------------------------------------------------- |
-| **IPv4 address**      | 32 bits, usually written as four decimal octets (0–255), e.g. `192.168.10.45`                  |
+| **IPv4 address**      | 32 bits, usually written as four decimal octets (0-255), e.g. `192.168.10.45`                  |
 | **Subnet mask**       | Tells which bits are **network** vs **host**; often written in **CIDR** form                   |
 | **CIDR notation**     | `192.168.10.0/24` — slash number = **prefix length** = count of **leading 1-bits** in the mask |
 | **Network address**   | First address in subnet; **host bits all 0** — identifies the subnet itself                    |
@@ -28,9 +28,9 @@ For IPv4 subnet with prefix length **p**:
 
 | Item                                | Formula        |
 | ----------------------------------- | -------------- |
-| Total addresses in subnet           | 2^{(32-p)}     |
-| Usable host addresses (typical LAN) | 2^{(32-p)} - 2 |
-| Host bits                           | 32 - p         |
+| Total addresses in subnet           | `2^(32-p)`     |
+| Usable host addresses (typical LAN) | `2^(32-p) - 2` |
+| Host bits                           | `32 - p`       |
 
 
 **Why minus 2?** Network address (all host bits 0) and broadcast (all host bits 1) are reserved on most LAN subnets.
@@ -52,7 +52,7 @@ For IPv4 subnet with prefix length **p**:
 | /26  | 255.255.255.192                      | 6         | 64          | 62             |
 | /25  | 255.255.255.128                      | 7         | 128         | 126            |
 | /24  | 255.255.255.0                        | 8         | 256         | 254            |
-| /23  | 255.255.255.0 → actually 255.254.0.0 | 9         | 512         | 510            |
+| /23  | 255.255.254.0                        | 9         | 512         | 510            |
 | /22  | 255.255.252.0                        | 10        | 1024        | 1022           |
 | /21  | 255.255.248.0                        | 11        | 2048        | 2046           |
 | /20  | 255.255.240.0                        | 12        | 4096        | 4094           |
@@ -69,7 +69,7 @@ Each octet = **8 bits**. Decimal 255 = `11111111`; decimal 0 = `00000000`.
 ### 4.1 Powers of Two (memorize through 2^16)
 
 
-| n   | 2^n   |
+| n   | Value |
 | --- | ----- |
 | 8   | 256   |
 | 9   | 512   |
@@ -87,22 +87,22 @@ Each octet = **8 bits**. Decimal 255 = `11111111`; decimal 0 = `00000000`.
 **192** in binary:
 
 ```
-128 + 64 = 192  →  11000000
+128 + 64 = 192  ->  11000000
 ```
 
 **224** in binary (common in /27 masks):
 
 ```
-128 + 64 + 32 = 224  →  11100000
+128 + 64 + 32 = 224  ->  11100000
 ```
 
-### 4.3 Mask ↔ CIDR
+### 4.3 Mask and CIDR
 
 `/26` on a classless network means **26 network bits**:
 
 ```
 255.255.255.192
-|←—— 24 fixed ——→|← 2 host bits in last octet →|
+|[---- 24 network bits ----][-- 2 host bits --]|
 11111111.11111111.11111111.11000000
 ```
 
@@ -116,7 +116,7 @@ Use this **four-step method** on any subnet.
 
 Example: `10.50.120.75/26`  
 
-- Host bits = 32 − 26 = **6**  
+- Host bits = 32 - 26 = **6**  
 - Block size in last octet = 2^6 = **64** (when subnet boundary falls in the 4th octet)
 
 ### Step 2 — Find the block (subnet) boundary
@@ -127,13 +127,13 @@ For `10.50.120.75/26`, block size in 4th octet = 64:
 
 ```
 0, 64, 128, 192 ...
-75 is in the 64–127 block  →  network 4th octet = 64
+75 is in the 64-127 block  ->  network 4th octet = 64
 ```
 
 ### Step 3 — Network and broadcast
 
 - **Network:** `10.50.120.64/26`  
-- **Broadcast:** last address in block = `10.50.120.127` (64 + 64 − 1)
+- **Broadcast:** last address in block = `10.50.120.127` (64 + 64 - 1)
 
 ### Step 4 — Usable hosts
 
@@ -163,9 +163,9 @@ For `10.50.120.75/26`, block size in 4th octet = 64:
 
 If you borrow **n** bits from host portion into network portion:
 
-- Number of new subnets = 2^n  
+- Number of new subnets = `2^n`  
 - New prefix length = old prefix + n  
-- Hosts per new subnet = 2^{(\text{remaining host bits})} - 2
+- Hosts per new subnet = `2^(remaining host bits) - 2`
 
 ---
 
@@ -176,27 +176,27 @@ If you borrow **n** bits from host portion into network portion:
 
 ### Step 1 — How many bits to borrow?
 
-Need 4 subnets → 2^n \ge 4 → borrow **n = 2** bits.
+Need 4 subnets -> need `2^n >= 4` -> borrow **n = 2** bits.
 
 ### Step 2 — New prefix
 
 `/24 + 2 = /26`
 
-Each subnet has 2^{32-26} = 64 addresses → **62 usable hosts** each.
+Each subnet has `2^(32-26)` = 64 addresses -> **62 usable hosts** each.
 
 ### Step 3 — Block size in 4th octet
 
-2^{(32-26)} in last octet when /26 → block size **64** in 4th octet: 0, 64, 128, 192.
+`2^(32-26)` in last octet when /26 -> block size **64** in 4th octet: 0, 64, 128, 192.
 
 ### Step 4 — List all subnets
 
 
 | Subnet # | Network            | Usable range    | Broadcast       |
 | -------- | ------------------ | --------------- | --------------- |
-| 1        | `192.168.1.0/26`   | `.1` – `.62`    | `192.168.1.63`  |
-| 2        | `192.168.1.64/26`  | `.65` – `.126`  | `192.168.1.127` |
-| 3        | `192.168.1.128/26` | `.129` – `.190` | `192.168.1.191` |
-| 4        | `192.168.1.192/26` | `.193` – `.254` | `192.168.1.255` |
+| 1        | `192.168.1.0/26`   | `.1` - `.62`    | `192.168.1.63`  |
+| 2        | `192.168.1.64/26`  | `.65` - `.126`  | `192.168.1.127` |
+| 3        | `192.168.1.128/26` | `.129` - `.190` | `192.168.1.191` |
+| 4        | `192.168.1.192/26` | `.193` - `.254` | `192.168.1.255` |
 
 
 ### Step 5 — Assign names (design doc style)
@@ -219,8 +219,8 @@ Each subnet has 2^{32-26} = 64 addresses → **62 usable hosts** each.
 **Given:** `172.16.5.0/24`  
 **Need:** 8 equal subnets
 
-Borrow **3** bits → `/27`  
-Block size in 4th octet = 2^{(32-27)} = 32
+Borrow **3** bits -> `/27`  
+Block size in 4th octet = `2^(32-27)` = 32
 
 
 | #   | Network           | Broadcast      |
@@ -235,7 +235,7 @@ Block size in 4th octet = 2^{(32-27)} = 32
 | 8   | `172.16.5.224/27` | `172.16.5.255` |
 
 
-Each /27 → **30 usable hosts**.
+Each /27 -> **30 usable hosts**.
 
 ---
 
@@ -243,7 +243,7 @@ Each /27 → **30 usable hosts**.
 
 **Question:** What is the **smallest** subnet (longest prefix) that fits **50 hosts**?
 
-Need usable ≥ 50 → total addresses ≥ 52 (with network + broadcast).
+Need usable >= 50 -> total addresses >= 52 (with network + broadcast).
 
 
 | Prefix | Usable hosts | Fits 50? |
@@ -256,7 +256,7 @@ Need usable ≥ 50 → total addresses ≥ 52 (with network + broadcast).
 
 If given `10.10.0.0/24` and one LAN needs 50 hosts:
 
-- Use one `/26` → e.g. `10.10.0.0/26` (`.1`–`.62`)  
+- Use one `/26` -> e.g. `10.10.0.0/26` (`.1`-`.62`)  
 - Remaining space for other subnets starts at `10.10.0.64` (next /26 boundary).
 
 ---
@@ -285,14 +285,14 @@ If given `10.10.0.0/24` and one LAN needs 50 hosts:
 | ------------------ | ------------ |
 | HQ LAN             | 100          |
 | Branch LAN         | 50           |
-| Guest Wi‑Fi        | 25           |
+| Guest Wi-Fi        | 25           |
 | Point-to-point WAN | 2            |
 | Management         | 5            |
 
 
-### Step 1 — Sort largest → smallest
+### Step 1 — Sort largest to smallest
 
-100 → 50 → 25 → 5 → 2
+100 -> 50 -> 25 -> 5 -> 2
 
 ### Step 2 — Pick prefix per requirement
 
@@ -308,38 +308,38 @@ If given `10.10.0.0/24` and one LAN needs 50 hosts:
 
 ### Step 3 — Assign sequentially
 
-**1) HQ — 100 hosts → /25**
+**1) HQ — 100 hosts -> /25**
 
 - Network: `192.168.100.0/25`  
-- Range: `.1` – `.126`  
+- Range: `.1` - `.126`  
 - Broadcast: `192.168.100.127`  
 - Next free address: `192.168.100.128`
 
-**2) Branch — 50 hosts → /26**
+**2) Branch — 50 hosts -> /26**
 
 - Network: `192.168.100.128/26`  
-- Range: `.129` – `.190`  
+- Range: `.129` - `.190`  
 - Broadcast: `192.168.100.191`  
 - Next free: `192.168.100.192`
 
-**3) Guest — 25 hosts → /27**
+**3) Guest — 25 hosts -> /27**
 
 - Network: `192.168.100.192/27`  
-- Range: `.193` – `.222`  
+- Range: `.193` - `.222`  
 - Broadcast: `192.168.100.223`  
 - Next free: `192.168.100.224`
 
-**4) Management — 5 hosts → /29**
+**4) Management — 5 hosts -> /29**
 
 - Network: `192.168.100.224/29`  
-- Range: `.225` – `.230`  
+- Range: `.225` - `.230`  
 - Broadcast: `192.168.100.231`  
 - Next free: `192.168.100.232`
 
-**5) WAN P2P — 2 hosts → /30**
+**5) WAN P2P — 2 hosts -> /30**
 
 - Network: `192.168.100.232/30`  
-- Range: `.233` – `.234` (typical router endpoints)  
+- Range: `.233` - `.234` (typical router endpoints)  
 - Broadcast: `192.168.100.235`  
 - Next free: `192.168.100.236`
 
@@ -348,14 +348,14 @@ If given `10.10.0.0/24` and one LAN needs 50 hosts:
 
 | Name   | Network              | Mask            | Gateway                | Usable range  |
 | ------ | -------------------- | --------------- | ---------------------- | ------------- |
-| HQ     | `192.168.100.0/25`   | 255.255.255.128 | `192.168.100.1`        | `.1`–`.126`   |
-| Branch | `192.168.100.128/26` | 255.255.255.192 | `192.168.100.129`      | `.129`–`.190` |
-| Guest  | `192.168.100.192/27` | 255.255.255.224 | `192.168.100.193`      | `.193`–`.222` |
-| Mgmt   | `192.168.100.224/29` | 255.255.255.248 | `192.168.100.225`      | `.225`–`.230` |
-| WAN    | `192.168.100.232/30` | 255.255.255.252 | R1: `.233`, R2: `.234` | `.233`–`.234` |
+| HQ     | `192.168.100.0/25`   | 255.255.255.128 | `192.168.100.1`        | `.1`-`.126`   |
+| Branch | `192.168.100.128/26` | 255.255.255.192 | `192.168.100.129`      | `.129`-`.190` |
+| Guest  | `192.168.100.192/27` | 255.255.255.224 | `192.168.100.193`      | `.193`-`.222` |
+| Mgmt   | `192.168.100.224/29` | 255.255.255.248 | `192.168.100.225`      | `.225`-`.230` |
+| WAN    | `192.168.100.232/30` | 255.255.255.252 | R1: `.233`, R2: `.234` | `.233`-`.234` |
 
 
-**Remaining space:** `192.168.100.236` – `192.168.100.255` (20 addresses) — spare for future /29 or /30.
+**Remaining space:** `192.168.100.236` - `192.168.100.255` (20 addresses) - spare for future /29 or /30.
 
 ---
 
@@ -425,7 +425,7 @@ If given `10.10.0.0/24` and one LAN needs 50 hosts:
 - Broadcast: `10.20.2.231`  
 - Next: `10.20.2.232`
 
-**Remaining** within `/22`: `10.20.2.232` – `10.20.3.255` for growth.
+**Remaining** within `/22`: `10.20.2.232` - `10.20.3.255` for growth.
 
 ---
 
@@ -440,9 +440,9 @@ When prefix is **less than /24**, block size affects **third** (or second) octet
 Networks align on **even** third octets:
 
 ```
-10.1.0.0/23   → 10.1.0.0 – 10.1.1.255
-10.1.2.0/23   → 10.1.2.0 – 10.1.3.255
-10.1.4.0/23   → 10.1.4.0 – 10.1.5.255
+10.1.0.0/23   -> 10.1.0.0 - 10.1.1.255
+10.1.2.0/23   -> 10.1.2.0 - 10.1.3.255
+10.1.4.0/23   -> 10.1.4.0 - 10.1.5.255
 ```
 
 **Wrong:** `10.1.1.0/23` — not aligned (third octet must be even for standard /23 split from /16-style planning).
@@ -469,14 +469,14 @@ Networks align on **even** third octets:
 
 Block size = 32 in 4th octet. Multiples of 32: 0, 32, 64, 96, 128, 160, 192, 224.
 
-200 falls in **192–223** block.
+200 falls in **192-223** block.
 
 
 | Answer    | Value                             |
 | --------- | --------------------------------- |
 | Network   | `172.16.40.192/27`                |
 | Broadcast | `172.16.40.223`                   |
-| Usable    | `172.16.40.193` – `172.16.40.222` |
+| Usable    | `172.16.40.193` - `172.16.40.222` |
 
 
 Is `.200` usable? **Yes.**
@@ -530,9 +530,9 @@ All four are `/26` inside `192.168.0.0/24` — they **exactly fill** the /24.
 10.10.3.0/24
 ```
 
-Four /24s aligned → **summary `10.10.0.0/22`**
+Four /24s aligned -> **summary `10.10.0.0/22`**
 
-Binary view: third octet varies 0–3 in last **2** bits of third octet → borrow from /16 to /22.
+Binary view: third octet varies 0-3 in last **2** bits of third octet -> borrow from /16 to /22.
 
 ---
 
@@ -542,7 +542,7 @@ Binary view: third octet varies 0–3 in last **2** bits of third octet → borr
 | RFC 1918 block   | Default feel                             |
 | ---------------- | ---------------------------------------- |
 | `10.0.0.0/8`     | Huge enterprises / labs                  |
-| `172.16.0.0/12`  | Medium (`172.16.0.0` – `172.31.255.255`) |
+| `172.16.0.0/12`  | Medium (`172.16.0.0` - `172.31.255.255`) |
 | `192.168.0.0/16` | Small office / home lab                  |
 
 
@@ -556,12 +556,11 @@ Binary view: third octet varies 0–3 in last **2** bits of third octet → borr
 
 Given `203.0.113.0/27`, list network, first/last host, broadcast, and usable count.
 
-Solution
+#### Solution A
 
-Block size 32 → only one subnet in this allocation.
+Block size 32 -> only one subnet in this allocation.
 
-
-|            |                  |
+| Field      | Value            |
 | ---------- | ---------------- |
 | Network    | `203.0.113.0/27` |
 | First host | `203.0.113.1`    |
@@ -569,31 +568,25 @@ Block size 32 → only one subnet in this allocation.
 | Broadcast  | `203.0.113.31`   |
 | Usable     | 30               |
 
-
-
-
 ### Problem B
 
 Split `10.1.1.0/24` into **2** equal subnets. Write both networks in CIDR.
 
-Solution
+#### Solution B
 
-Borrow 1 bit → `/25`.
+Borrow 1 bit -> `/25`.
 
-1. `10.1.1.0/25` (`.1`–`.126`, broadcast `.127`)
-2. `10.1.1.128/25` (`.129`–`.254`, broadcast `.255`)
-
-
+1. `10.1.1.0/25` (`.1`-`.126`, broadcast `.127`)
+2. `10.1.1.128/25` (`.129`-`.254`, broadcast `.255`)
 
 ### Problem C — VLSM
 
 From `172.16.10.0/24`, allocate for: **60** hosts, **28** hosts, **12** hosts, **2** hosts (WAN). Write full table.
 
-Solution
+#### Solution C
 
-Order: 60 → 28 → 12 → 2  
-Prefixes: /26, /27, /28, /30  
-
+Order: 60 -> 28 -> 12 -> 2  
+Prefixes: /26, /27, /28, /30
 
 | LAN      | Network            |
 | -------- | ------------------ |
@@ -602,8 +595,7 @@ Prefixes: /26, /27, /28, /30
 | 12 hosts | `172.16.10.96/28`  |
 | WAN      | `172.16.10.112/30` |
 
-
-Remaining: `172.16.10.116` – `172.16.10.255`
+Remaining: `172.16.10.116` - `172.16.10.255`
 
 
 
@@ -626,15 +618,17 @@ Remaining: `172.16.10.116` – `172.16.10.255`
 
 **Trick:** To find network of `x` in last octet with increment **I**:
 
+```
+network_octet = (x / I, round down) * I
+```
 
-\text{networkoctet} = \lfloor x / I \rfloor \times I
+In words: divide `x` by `I`, drop any fraction, multiply by `I` again.
 
-
-Example: `x=75`, `/26` → I=64 → floor(75/64)×64 = **64**.
+Example: `x=75`, `/26` -> I=64 -> floor(75/64) * 64 = **64**.
 
 ### 12.2 “Magic number” for hosts needed
 
-Find smallest **2^h − 2 ≥ required hosts** → h host bits → prefix = **32 − h**.
+Find smallest `2^h - 2 >= required hosts` -> **h** host bits -> prefix = **32 - h**.
 
 ---
 
@@ -645,7 +639,7 @@ When you subnet for Packet Tracer or work, always output:
 ```
 | VLAN | Name   | Network          | Mask            | Gateway        | DHCP range        |
 |------|--------|------------------|-----------------|----------------|-------------------|
-| 10   | Users  | 192.168.100.0/25 | 255.255.255.128 | 192.168.100.1  | .10 – .200        |
+| 10   | Users  | 192.168.100.0/25 | 255.255.255.128 | 192.168.100.1  | .10 - .200        |
 ```
 
 Include **DNS**, **DHCP excluded** gateway/broadcast, and **reserved** ranges for infrastructure.
@@ -656,7 +650,7 @@ Include **DNS**, **DHCP excluded** gateway/broadcast, and **reserved** ranges fo
 
 1. **Overlapping subnets** — usually from wrong VLSM order or misaligned block.
 2. **Using network/broadcast as host IPs** — breaks routing and DHCP.
-3. **Wrong mask on a host** — host thinks neighbor is remote → sends to wrong gateway.
+3. **Wrong mask on a host** — host thinks neighbor is remote -> sends to wrong gateway.
 4. **Summarizing non-contiguous ranges** — blackholes traffic.
 5. **Forgetting /30 and /31** on WAN links when doing VLSM — allocate **before** tiny LANs if policy says WAN is fixed, or follow “largest first” consistently.
 
@@ -664,9 +658,9 @@ Include **DNS**, **DHCP excluded** gateway/broadcast, and **reserved** ranges fo
 
 ## Part 15 — IPv6 Prefix Basics (Brief)
 
-IPv6 uses **128-bit** addresses; subnetting is still **prefix length**, but space is huge so you usually assign `**/64`** per LAN (standard SLAAC segment).
+IPv6 uses **128-bit** addresses; subnetting is still **prefix length**, but space is huge so you usually assign **`/64`** per LAN (standard SLAAC segment).
 
-Example: `2001:db8:acad::/48` → subnets like:
+Example: `2001:db8:acad::/48` -> subnets like:
 
 ```
 2001:db8:acad:1::/64
@@ -681,7 +675,7 @@ No broadcast; no “minus 2” host math on LAN `/64`s for human planning. Focus
 ## Quick Workflow Card (Print This)
 
 ```
-1. Count hosts needed → pick prefix (/26, /27, …)
+1. Count hosts needed -> pick prefix (/26, /27, ...)
 2. List block size = 2^(host bits)
 3. Align network to block boundary
 4. Network = first address; Broadcast = last; Hosts = middle

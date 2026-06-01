@@ -506,8 +506,8 @@ show lldp neighbors
 ## Related Files in This Repo
 
 - [CCNA-Networking-Study-Guide.md](CCNA-Networking-Study-Guide.md) — full syllabus
-- [subnetting.md](subnetting.md) — IPv4 math
+- [subnetting.md](IP-addresses/subnetting.md) — IPv4 math
 - [inter_vlan_routing.md](inter_vlan_routing.md) — inter-VLAN concepts
-- [DHCP_Notes.md](DHCP_Notes.md) — DHCP deep dive
+- [DHCP_Notes.md](IP-addresses/DHCP_Notes.md) — DHCP deep dive
 - [labs/](labs/) — Packet Tracer lab walkthroughs
 
