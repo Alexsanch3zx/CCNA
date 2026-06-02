@@ -169,7 +169,10 @@ You should see VLANs **10, 20, 30, 40** in the list (plus default VLAN 1).
 ### SW1 only
 
 ```cisco
+# Moves from User EXEC mode (>) to Privileged EXEC mode (#).
 enable
+
+# Enters Global Configuration mode.
 configure terminal
 
 # Selects multiple interfaces at once:Fa0/1 and Fa0/2
