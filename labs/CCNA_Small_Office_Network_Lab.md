@@ -17,40 +17,47 @@ A small office with **4 VLANs**, **two switches**, **one router** (router-on-a-s
 
 ### VLANs and networks
 
-| VLAN | Name     | Network           | Gateway (router) |
-| ---- | -------- | ----------------- | ---------------- |
-| 10   | HR       | 192.168.10.0/24   | 192.168.10.1     |
-| 20   | Sales    | 192.168.20.0/24   | 192.168.20.1     |
-| 30   | Servers  | 192.168.30.0/24   | 192.168.30.1     |
-| 40   | Printers | 192.168.40.0/24   | 192.168.40.1     |
+
+| VLAN | Name     | Network         | Gateway (router) |
+| ---- | -------- | --------------- | ---------------- |
+| 10   | HR       | 192.168.10.0/24 | 192.168.10.1     |
+| 20   | Sales    | 192.168.20.0/24 | 192.168.20.1     |
+| 30   | Servers  | 192.168.30.0/24 | 192.168.30.1     |
+| 40   | Printers | 192.168.40.0/24 | 192.168.40.1     |
+
 
 ### Device IPs (after DHCP or static)
 
-| Device   | VLAN | IP (static option) | Gateway       |
-| -------- | ---- | ------------------ | ------------- |
-| PC0      | 10   | 192.168.10.10      | 192.168.10.1  |
-| PC1      | 10   | 192.168.10.11      | 192.168.10.1  |
-| PC2      | 20   | 192.168.20.10      | 192.168.20.1  |
-| PC3      | 20   | 192.168.20.11      | 192.168.20.1  |
-| Server0  | 30   | 192.168.30.10      | 192.168.30.1  |
-| Printer0 | 40   | 192.168.40.10      | 192.168.40.1  |
+
+| Device   | VLAN | IP (static option) | Gateway      |
+| -------- | ---- | ------------------ | ------------ |
+| PC0      | 10   | 192.168.10.10      | 192.168.10.1 |
+| PC1      | 10   | 192.168.10.11      | 192.168.10.1 |
+| PC2      | 20   | 192.168.20.10      | 192.168.20.1 |
+| PC3      | 20   | 192.168.20.11      | 192.168.20.1 |
+| Server0  | 30   | 192.168.30.10      | 192.168.30.1 |
+| Printer0 | 40   | 192.168.40.10      | 192.168.40.1 |
+
 
 **Plan:** PCs use **DHCP** after Step 8. Server and printer use **static** IPs (Step 7).
 
 ### DHCP pools (router) — exclude static hosts
 
-| Pool name | Network        | Default router  | Excluded (do not assign)   |
-| --------- | -------------- | --------------- | -------------------------- |
-| HR        | 192.168.10.0   | 192.168.10.1    | .10, .11 (optional static) |
-| SALES     | 192.168.20.0   | 192.168.20.1    | .10, .11                   |
-| SERVERS   | 192.168.30.0   | 192.168.30.1    | .10 (server)               |
-| PRINTERS  | 192.168.40.0   | 192.168.40.1    | .10 (printer)              |
+
+| Pool name | Network      | Default router | Excluded (do not assign)   |
+| --------- | ------------ | -------------- | -------------------------- |
+| HR        | 192.168.10.0 | 192.168.10.1   | .10, .11 (optional static) |
+| SALES     | 192.168.20.0 | 192.168.20.1   | .10, .11                   |
+| SERVERS   | 192.168.30.0 | 192.168.30.1   | .10 (server)               |
+| PRINTERS  | 192.168.40.0 | 192.168.40.1   | .10 (printer)              |
+
 
 ---
 
 ## Part B — Topology and Cabling (Packet Tracer GUI)
 
 ### Devices to add
+
 
 | Qty | Device type in PT        | Rename (optional) |
 | --- | ------------------------ | ----------------- |
@@ -60,11 +67,13 @@ A small office with **4 VLANs**, **two switches**, **one router** (router-on-a-s
 | 1   | Server                   | Server0           |
 | 1   | Printer (or generic end) | Printer0          |
 
+
 ### Cable type
 
 Use **Copper Straight-Through** (green solid line) for all Ethernet links in this lab.
 
 ### Exact connections
+
 
 | From device | From port | To device | To port | Notes                    |
 | ----------- | --------- | --------- | ------- | ------------------------ |
@@ -76,6 +85,7 @@ Use **Copper Straight-Through** (green solid line) for all Ethernet links in thi
 | SW2         | Fa0/2     | PC3       | Fa0     | Sales                    |
 | SW2         | Fa0/3     | Server0   | Fa0     | Servers VLAN             |
 | SW2         | Fa0/4     | Printer0  | Fa0     | Printers VLAN            |
+
 
 ### Topology diagram
 
@@ -102,9 +112,9 @@ Click **Fast Forward Time** until router/switch interfaces show **up/up** (or co
 
 ## Part C — Access the CLI in Packet Tracer
 
-1. Click **SW1** (or R1).  
-2. Open the **CLI** tab.  
-3. Press **Enter** if asked to terminate autoinstall — choose **no** if prompted.  
+1. Click **SW1** (or R1).
+2. Open the **CLI** tab.
+3. Press **Enter** if asked to terminate autoinstall — choose **no** if prompted.
 4. You should see `Switch>` or `Router>`.
 
 **Tip:** Type `enable` then `configure terminal` (abbrev: `conf t`) before pasting configs below.
@@ -162,18 +172,29 @@ You should see VLANs **10, 20, 30, 40** in the list (plus default VLAN 1).
 enable
 configure terminal
 
+# Selects multiple interfaces at once:Fa0/1 and Fa0/2
 interface range fa0/1-2
+
+ # Sets the selected ports as access ports.
  switchport mode access
+
+ # Assigns the access ports to VLAN 10.
+ # After this command: Fa0/1 → VLAN 10 and Fa0/2 → VLAN 10
  switchport access vlan 10
+
+# Leaves Interface Configuration mode and returns to Global Configuration mode.
 exit
 
+# Returns directly to Privileged EXEC mode.
 end
 ```
 
-| Port   | Device | VLAN |
-| ------ | ------ | ---- |
-| Fa0/1  | PC0    | 10   |
-| Fa0/2  | PC1    | 10   |
+
+| Port  | Device | VLAN |
+| ----- | ------ | ---- |
+| Fa0/1 | PC0    | 10   |
+| Fa0/2 | PC1    | 10   |
+
 
 ### SW2 only
 
@@ -199,12 +220,14 @@ exit
 end
 ```
 
-| Port   | Device   | VLAN |
-| ------ | -------- | ---- |
-| Fa0/1  | PC2      | 20   |
-| Fa0/2  | PC3      | 20   |
-| Fa0/3  | Server0  | 30   |
-| Fa0/4  | Printer0 | 40   |
+
+| Port  | Device   | VLAN |
+| ----- | -------- | ---- |
+| Fa0/1 | PC2      | 20   |
+| Fa0/2 | PC3      | 20   |
+| Fa0/3 | Server0  | 30   |
+| Fa0/4 | Printer0 | 40   |
+
 
 ### Verify
 
@@ -344,19 +367,23 @@ Before DHCP, set **one PC** manually to test routing:
 
 **PC0 (Desktop → IP Configuration):**
 
-| Field        | Value           |
-| ------------ | --------------- |
-| IP Address   | 192.168.10.10   |
-| Subnet Mask  | 255.255.255.0   |
-| Default Gateway | 192.168.10.1 |
+
+| Field           | Value         |
+| --------------- | ------------- |
+| IP Address      | 192.168.10.10 |
+| Subnet Mask     | 255.255.255.0 |
+| Default Gateway | 192.168.10.1  |
+
 
 **PC2:**
 
-| Field        | Value           |
-| ------------ | --------------- |
-| IP Address   | 192.168.20.10   |
-| Subnet Mask  | 255.255.255.0   |
-| Default Gateway | 192.168.20.1 |
+
+| Field           | Value         |
+| --------------- | ------------- |
+| IP Address      | 192.168.20.10 |
+| Subnet Mask     | 255.255.255.0 |
+| Default Gateway | 192.168.20.1  |
+
 
 From **PC0** → **Command Prompt**:
 
@@ -375,22 +402,26 @@ ping 192.168.20.10
 
 ### Server0
 
-1. Click **Server0** → **Desktop** tab → **IP Configuration**.  
+1. Click **Server0** → **Desktop** tab → **IP Configuration**.
 2. Select **Static**.
 
-| Field           | Value           |
-| --------------- | --------------- |
-| IP Address      | 192.168.30.10   |
-| Subnet Mask     | 255.255.255.0   |
-| Default Gateway | 192.168.30.1    |
+
+| Field           | Value         |
+| --------------- | ------------- |
+| IP Address      | 192.168.30.10 |
+| Subnet Mask     | 255.255.255.0 |
+| Default Gateway | 192.168.30.1  |
+
 
 ### Printer0
 
-| Field           | Value           |
-| --------------- | --------------- |
-| IP Address      | 192.168.40.10   |
-| Subnet Mask     | 255.255.255.0   |
-| Default Gateway | 192.168.40.1    |
+
+| Field           | Value         |
+| --------------- | ------------- |
+| IP Address      | 192.168.40.10 |
+| Subnet Mask     | 255.255.255.0 |
+| Default Gateway | 192.168.40.1  |
+
 
 ### Test from PC0
 
@@ -405,13 +436,15 @@ ping 192.168.40.10
 
 **Where:** Server0 — no CLI required.
 
-1. Click **Server0** → **Services** tab → **DNS**.  
-2. Set **DNS Service** to **On**.  
+1. Click **Server0** → **Services** tab → **DNS**.
+2. Set **DNS Service** to **On**.
 3. Under **DNS Records**, add:
 
-| Name            | Type | Address        |
-| --------------- | ---- | -------------- |
+
+| Name            | Type     | Address       |
+| --------------- | -------- | ------------- |
 | `company.local` | A Record | 192.168.30.10 |
+
 
 (If PT asks for only hostname, use `company.local` pointing to **192.168.30.10**.)
 
@@ -431,8 +464,8 @@ ping company.local
 
 ## Step 8 — HTTP Service on Server (Packet Tracer GUI)
 
-1. **Server0** → **Services** → **HTTP** → **On**.  
-2. Optional: edit index page text to `Welcome to Company Network`.  
+1. **Server0** → **Services** → **HTTP** → **On**.
+2. Optional: edit index page text to `Welcome to Company Network`.
 3. From **PC0** → **Desktop** → **Web Browser** → URL:
 
 ```text
@@ -499,8 +532,8 @@ end
 
 For **PC0, PC1, PC2, PC3**:
 
-1. **Desktop** → **IP Configuration**.  
-2. Select **DHCP**.  
+1. **Desktop** → **IP Configuration**.
+2. Select **DHCP**.
 3. Wait a few seconds (or fast-forward time).
 
 ### 9.4 Verify DHCP
@@ -620,11 +653,13 @@ show spanning-tree
 
 Record on paper:
 
-| Question              | Your answer (from output)      |
-| --------------------- | ------------------------------ |
-| Which switch is root? | Lowest priority / MAC wins     |
-| Root port on SW2?     | Port toward root bridge        |
-| Any blocking port?    | On redundant paths if present  |
+
+| Question              | Your answer (from output)     |
+| --------------------- | ----------------------------- |
+| Which switch is root? | Lowest priority / MAC wins    |
+| Root port on SW2?     | Port toward root bridge       |
+| Any blocking port?    | On redundant paths if present |
+
 
 This lab has **no loop** (tree topology)—most ports will be **forwarding**. The exercise is learning to **read** the output.
 
@@ -655,39 +690,43 @@ Press **Enter** when prompted for destination filename.
 
 Run these before you consider the lab done.
 
-| # | Test | From | Command / action | Expected |
-| - | ---- | ---- | ---------------- | -------- |
-| 1 | Same VLAN | PC0 | `ping 192.168.10.11` | Success |
-| 2 | Cross VLAN | PC0 | `ping 192.168.20.10` | Success |
-| 3 | To server | PC0 | `ping 192.168.30.10` | Success |
-| 4 | DNS | PC0 | `ping company.local` | Success |
-| 5 | HTTP | PC0 | Browser `http://company.local` | Page loads |
-| 6 | ACL block | PC2 | `ping 192.168.10.10` | Fail |
-| 7 | ACL allow server | PC2 | `ping 192.168.30.10` | Success |
-| 8 | Trunk | SW1 | `show interfaces trunk` | Fa0/23, Fa0/24 |
-| 9 | VLANs | SW1 | `show vlan brief` | Ports in 10,20,30,40 |
-| 10 | Router IFs | R1 | `show ip interface brief` | .10–.40 up |
+
+| #   | Test             | From | Command / action               | Expected             |
+| --- | ---------------- | ---- | ------------------------------ | -------------------- |
+| 1   | Same VLAN        | PC0  | `ping 192.168.10.11`           | Success              |
+| 2   | Cross VLAN       | PC0  | `ping 192.168.20.10`           | Success              |
+| 3   | To server        | PC0  | `ping 192.168.30.10`           | Success              |
+| 4   | DNS              | PC0  | `ping company.local`           | Success              |
+| 5   | HTTP             | PC0  | Browser `http://company.local` | Page loads           |
+| 6   | ACL block        | PC2  | `ping 192.168.10.10`           | Fail                 |
+| 7   | ACL allow server | PC2  | `ping 192.168.30.10`           | Success              |
+| 8   | Trunk            | SW1  | `show interfaces trunk`        | Fa0/23, Fa0/24       |
+| 9   | VLANs            | SW1  | `show vlan brief`              | Ports in 10,20,30,40 |
+| 10  | Router IFs       | R1   | `show ip interface brief`      | .10–.40 up           |
+
 
 ---
 
 ## Part E — Troubleshooting Guide
 
-| Symptom | Likely cause | Fix |
-| ------- | ------------ | --- |
-| No link on router | `g0/0` shutdown | `no shutdown` |
-| PCs same VLAN can’t ping | Wrong VLAN on port | `show vlan brief`, fix access VLAN |
-| PCs different VLAN can’t ping | Missing router subif or trunk | Steps 4–5, `show ip int brief` |
-| Only SW2 VLANs fail | Trunk Fa0/23 down / not trunk | `show interfaces trunk` |
-| DHCP fails | Pools missing or wrong GW | Step 9, `show ip dhcp pool` |
-| DNS name fails | DNS off or PC DNS blank | Server DNS on; set DNS 192.168.30.10 |
-| Sales can ping HR | ACL not applied or wrong direction | `show access-lists`, `g0/0.20 in` |
-| Port security err-disabled | Wrong MAC on Fa0/1 | `shutdown` / `no shutdown` on port |
+
+| Symptom                       | Likely cause                       | Fix                                  |
+| ----------------------------- | ---------------------------------- | ------------------------------------ |
+| No link on router             | `g0/0` shutdown                    | `no shutdown`                        |
+| PCs same VLAN can’t ping      | Wrong VLAN on port                 | `show vlan brief`, fix access VLAN   |
+| PCs different VLAN can’t ping | Missing router subif or trunk      | Steps 4–5, `show ip int brief`       |
+| Only SW2 VLANs fail           | Trunk Fa0/23 down / not trunk      | `show interfaces trunk`              |
+| DHCP fails                    | Pools missing or wrong GW          | Step 9, `show ip dhcp pool`          |
+| DNS name fails                | DNS off or PC DNS blank            | Server DNS on; set DNS 192.168.30.10 |
+| Sales can ping HR             | ACL not applied or wrong direction | `show access-lists`, `g0/0.20 in`    |
+| Port security err-disabled    | Wrong MAC on Fa0/1                 | `shutdown` / `no shutdown` on port   |
+
 
 ### Instructor-style break scenarios (practice)
 
-1. **Wrong gateway on PC0** → set gateway to `192.168.10.2` and fix.  
-2. **PC2 on VLAN 10 instead of 20** → fix access port on SW2 Fa0/1.  
-3. **Trunk shut down** → `interface fa0/23` / `no shutdown`.  
+1. **Wrong gateway on PC0** → set gateway to `192.168.10.2` and fix.
+2. **PC2 on VLAN 10 instead of 20** → fix access port on SW2 Fa0/1.
+3. **Trunk shut down** → `interface fa0/23` / `no shutdown`.
 4. **ACL too broad** → remove `deny` or add `permit` as needed.
 
 ---
@@ -726,7 +765,7 @@ show running-config
 - Extended ACLs and direction (`in` on subinterface)  
 - Port security  
 - Spanning tree output interpretation  
-- Structured verification and troubleshooting  
+- Structured verification and troubleshooting
 
 ---
 
