@@ -104,6 +104,20 @@ Use **Copper Straight-Through** (green solid line) for all Ethernet links in thi
                     PC2    PC3  Server0  Printer0
 ```
 
+### Topology diagram (simple view)
+
+```text
+                   [ R1 ]
+                     |
+                    SW1
+                  /  |  \
+               PC0  PC1  SW2
+                         / |  \
+                      PC2 PC3 Server0
+                                \
+                               Printer0
+```
+
 ### After cabling — wait for link lights
 
 Click **Fast Forward Time** until router/switch interfaces show **up/up** (or configure `no shutdown` in CLI).
