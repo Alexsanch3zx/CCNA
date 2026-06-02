@@ -33,6 +33,20 @@ Short entries are fine. Consistency matters more than length.
 
 ---
 
+## Reflections
+
+### 2026-06-02 — What `Fa0/23` means
+
+**What I learned:** On a Cisco switch, **`Fa0/23`** is interface notation: **`Fa`** = FastEthernet, **`0`** = module/slot (on a 2960-style switch this is usually fixed at 0), **`23`** = port number. So it is **port 23** on the FastEthernet module — not “port 0 and port 23.” In the [Small Office Network Lab](labs/CCNA_Small_Office_Network_Lab.md), **SW1 Fa0/23** connects to **SW2 Fa0/23** as the **trunk** between switches.
+
+**What clicked:** The slash separates **where** on the device (slot) from **which port** on that module.
+
+**Still fuzzy:** When labs use `Gig0/0` on a router vs `Fa0/24` on a switch — same idea, different interface type prefix.
+
+**Next steps:** Match port labels on the topology diagram to `interface fa0/23` in config without mixing up access ports (PCs) and trunk ports.
+
+---
+
 ### Example entry (delete or replace when I write my own)
 
 ### 2026-01-01 — First VLAN lab
@@ -47,4 +61,4 @@ Short entries are fine. Consistency matters more than length.
 
 ---
 
-*Last updated: 6/1*
+*Last updated: 6/2*
