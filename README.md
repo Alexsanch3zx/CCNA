@@ -35,6 +35,14 @@ Short entries are fine. Consistency matters more than length.
 
 ## Reflections
 
+### 2026-06-02 — Checking VLANs (CLI and GUI)
+
+**What I learned:** I can verify VLANs with `show vlan brief` in the switch CLI, or click the switch in Packet Tracer → **Config** → **VLAN Database** to see the VLANs I created without typing commands.
+
+**What clicked:** CLI and GUI show the same info — good for lab checks when I forget a command.
+
+---
+
 ### 2026-06-02 — IPv4 is 32 bits and `/24` math (`2^n` and `2^n - 2`)
 
 **What I learned:** Every **IPv4 address is 32 bits** total, written as four octets (e.g. `192.168.10.0`). The **`/24`** in `192.168.10.0/24` means **24 bits are network** and the rest are **host** bits. So: **32 - 24 = 8 host bits**. From there:
