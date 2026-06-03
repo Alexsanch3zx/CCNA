@@ -35,6 +35,25 @@ Short entries are fine. Consistency matters more than length.
 
 ## Reflections
 
+### 2026-06-02 — IPv4 is 32 bits and `/24` math (`2^n` and `2^n - 2`)
+
+**What I learned:** Every **IPv4 address is 32 bits** total, written as four octets (e.g. `192.168.10.0`). The **`/24`** in `192.168.10.0/24` means **24 bits are network** and the rest are **host** bits. So: **32 - 24 = 8 host bits**. From there:
+
+| Calculation | Formula | For `/24` (8 host bits) |
+| ----------- | ------- | ------------------------ |
+| Total addresses in the subnet | `2^n` (n = host bits) | `2^8` = **256** |
+| Usable host addresses (typical LAN) | `2^n - 2` | `2^8 - 2` = **254** |
+
+The **-2** is because the **network address** (host bits all 0) and **broadcast** (host bits all 1) are not assigned to normal hosts.
+
+**What clicked:** The slash number is not “how many hosts” — it is **how many network bits**. I subtract from **32** first, then use **n** in `2^n`.
+
+**Still fuzzy:** Doing the same math when the subnet boundary is not in the last octet (e.g. `/22` or `/26) — I need to know which octet the block size lands in.
+
+**Next steps:** Practice three random prefixes (`/26`, `/27`, `/30`) on paper; use [subnetting.md](IP-addresses/subnetting.md) for VLSM next.
+
+---
+
 ### 2026-06-02 — DHCP (Dynamic Host Configuration Protocol)
 
 **What I learned:** **DHCP** assigns IP settings automatically (address, mask, default gateway, DNS) so I do not have to type them on every PC. The client process is **DORA**: **D**iscover, **O**ffer, **R**equest, **A**cknowledge. On the router in my lab, I create **pools** per VLAN (e.g. HR `192.168.10.0`) and set **default-router** to the subinterface IP (`.1`). `**ip dhcp excluded-address`** keeps specific IPs free for static devices (server, printer). PCs in Packet Tracer use **DHCP** in Desktop → IP Configuration instead of static.
