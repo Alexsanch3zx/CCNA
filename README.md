@@ -35,7 +35,7 @@ Short entries are fine. Consistency matters more than length.
 
 ## Reflections
 
-### 2026-06-02 — Encapsulation (data going down the stack)
+### 2026-06-04 — Encapsulation (data going down the stack)
 
 **What I learned:** **Encapsulation** is how data gets wrapped layer by layer **on the way out**. The application sends data; each lower layer adds its own header (TCP/UDP, then IP, then Ethernet frame with MAC addresses, then bits on the wire). On the way **in**, the device **de-encapsulates** — strips headers from the bottom up. A **switch** cares about the **frame (MAC)**; a **router** looks at the **packet (IP)** and builds a **new frame** for the next hop.
 
@@ -47,7 +47,7 @@ Short entries are fine. Consistency matters more than length.
 
 ---
 
-### 2026-06-02 — Checking VLANs (CLI and GUI)
+### 2026-06-03 — Checking VLANs (CLI and GUI)
 
 **What I learned:** I can verify VLANs with `show vlan brief` in the switch CLI, or click the switch in Packet Tracer → **Config** → **VLAN Database** to see the VLANs I created without typing commands.
 
@@ -55,14 +55,16 @@ Short entries are fine. Consistency matters more than length.
 
 ---
 
-### 2026-06-02 — IPv4 is 32 bits and `/24` math (`2^n` and `2^n - 2`)
+### 2026-06-03 — IPv4 is 32 bits and `/24` math (`2^n` and `2^n - 2`)
 
-**What I learned:** Every **IPv4 address is 32 bits** total, written as four octets (e.g. `192.168.10.0`). The **`/24`** in `192.168.10.0/24` means **24 bits are network** and the rest are **host** bits. So: **32 - 24 = 8 host bits**. From there:
+**What I learned:** Every **IPv4 address is 32 bits** total, written as four octets (e.g. `192.168.10.0`). The `**/24`** in `192.168.10.0/24` means **24 bits are network** and the rest are **host** bits. So: **32 - 24 = 8 host bits**. From there:
 
-| Calculation | Formula | For `/24` (8 host bits) |
-| ----------- | ------- | ------------------------ |
-| Total addresses in the subnet | `2^n` (n = host bits) | `2^8` = **256** |
-| Usable host addresses (typical LAN) | `2^n - 2` | `2^8 - 2` = **254** |
+
+| Calculation                         | Formula               | For `/24` (8 host bits) |
+| ----------------------------------- | --------------------- | ----------------------- |
+| Total addresses in the subnet       | `2^n` (n = host bits) | `2^8` = **256**         |
+| Usable host addresses (typical LAN) | `2^n - 2`             | `2^8 - 2` = **254**     |
+
 
 The **-2** is because the **network address** (host bits all 0) and **broadcast** (host bits all 1) are not assigned to normal hosts.
 
@@ -88,7 +90,7 @@ The **-2** is because the **network address** (host bits all 0) and **broadcast*
 
 ### 2026-06-02 — What `Fa0/23` means
 
-**What I learned:** On a Cisco switch, `**Fa0/23`** is interface notation: `**Fa**` = FastEthernet, `**0**` = module/slot (on a 2960-style switch this is usually fixed at 0), `**23**` = port number. So it is **port 23** on the FastEthernet module — not “port 0 and port 23.” In the [Small Office Network Lab](labs/CCNA_Small_Office_Network_Lab.md), **SW1 Fa0/23** connects to **SW2 Fa0/23** as the **trunk** between switches.
+**What I learned:** On a Cisco switch, `**Fa0/23`** is interface notation: `**Fa`** = FastEthernet, `**0**` = module/slot (on a 2960-style switch this is usually fixed at 0), `**23**` = port number. So it is **port 23** on the FastEthernet module — not “port 0 and port 23.” In the [Small Office Network Lab](labs/CCNA_Small_Office_Network_Lab.md), **SW1 Fa0/23** connects to **SW2 Fa0/23** as the **trunk** between switches.
 
 **What clicked:** The slash separates **where** on the device (slot) from **which port** on that module.
 
