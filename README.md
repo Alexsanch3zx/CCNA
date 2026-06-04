@@ -35,6 +35,18 @@ Short entries are fine. Consistency matters more than length.
 
 ## Reflections
 
+### 2026-06-02 — Encapsulation (data going down the stack)
+
+**What I learned:** **Encapsulation** is how data gets wrapped layer by layer **on the way out**. The application sends data; each lower layer adds its own header (TCP/UDP, then IP, then Ethernet frame with MAC addresses, then bits on the wire). On the way **in**, the device **de-encapsulates** — strips headers from the bottom up. A **switch** cares about the **frame (MAC)**; a **router** looks at the **packet (IP)** and builds a **new frame** for the next hop.
+
+**What clicked:** When I ping another PC on the same VLAN, the IP addresses stay the same on that hop, but if the packet crosses a **router**, the **MAC addresses change** every time — IP usually does not (without NAT). Packet Tracer **Simulation** mode lets me watch this happen step by step.
+
+**Still fuzzy:** Remembering the exact **PDU names** (segment vs packet vs frame) without mixing them up on exam questions.
+
+**Next steps:** Trace one **same-VLAN** ping and one **cross-VLAN** ping in Simulation; review [TCP-IP-Model-Study-Guide.md](TCP_IP-model/TCP-IP-Model-Study-Guide.md) Part 4.
+
+---
+
 ### 2026-06-02 — Checking VLANs (CLI and GUI)
 
 **What I learned:** I can verify VLANs with `show vlan brief` in the switch CLI, or click the switch in Packet Tracer → **Config** → **VLAN Database** to see the VLANs I created without typing commands.
