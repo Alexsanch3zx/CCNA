@@ -1,4 +1,4 @@
-# CCNA Study Guide & Learning Journal
+# 6CCNA Study Guide & Learning Journal
 
 Personal repository for **Cisco CCNA (200-301)** prep, Packet Tracer labs, and notes as I move into tech.
 
@@ -34,6 +34,18 @@ Short entries are fine. Consistency matters more than length.
 ---
 
 ## Reflections
+
+### 2026-06-04 — Access Control List (ACL) on a subinterface = Router-on-a-Stick (Small Office Lab)
+
+**What I learned:** In the [Small Office Network Lab](labs/CCNA_Small_Office_Network_Lab.md), putting an ACL on `**interface g0/0.20`** only works because **inter-VLAN routing** is already built with **router-on-a-stick**. One physical port (`g0/0`) trunks to the switch; each VLAN gets a **subinterface** (`g0/0.10`, `g0/0.20`, …) with `**encapsulation dot1Q`** and a **gateway IP** (e.g. `192.168.20.1` for Sales). PCs in different VLANs cannot talk at Layer 2 — they send to their **default gateway**, and the router routes between subnets.
+
+**What clicked:** Applying the ACL to `**g0/0.20 in`** means traffic **from Sales entering the router** is filtered before it can reach HR or other VLANs. Router-on-a-stick makes the router the **only path** between VLANs, so ACLs on subinterfaces are a logical place to enforce policy.
+
+**Still fuzzy:** Picking `**in` vs `out`** on the first try without drawing which way the packet flows.
+
+**Next steps:** Test Sales → HR (blocked) vs HR → Sales (allowed with my lab ACL); read [inter_vlan_routing.md](inter_vlan_routing.md).
+
+---
 
 ### 2026-06-04 — Encapsulation (data going down the stack)
 
@@ -90,7 +102,7 @@ The **-2** is because the **network address** (host bits all 0) and **broadcast*
 
 ### 2026-06-02 — What `Fa0/23` means
 
-**What I learned:** On a Cisco switch, `**Fa0/23`** is interface notation: `**Fa`** = FastEthernet, `**0**` = module/slot (on a 2960-style switch this is usually fixed at 0), `**23**` = port number. So it is **port 23** on the FastEthernet module — not “port 0 and port 23.” In the [Small Office Network Lab](labs/CCNA_Small_Office_Network_Lab.md), **SW1 Fa0/23** connects to **SW2 Fa0/23** as the **trunk** between switches.
+**What I learned:** On a Cisco switch, `**Fa0/23`** is interface notation: `**Fa`** = FastEthernet, `**0`** = module/slot (on a 2960-style switch this is usually fixed at 0), `**23**` = port number. So it is **port 23** on the FastEthernet module — not “port 0 and port 23.” In the [Small Office Network Lab](labs/CCNA_Small_Office_Network_Lab.md), **SW1 Fa0/23** connects to **SW2 Fa0/23** as the **trunk** between switches.
 
 **What clicked:** The slash separates **where** on the device (slot) from **which port** on that module.
 
@@ -114,4 +126,4 @@ The **-2** is because the **network address** (host bits all 0) and **broadcast*
 
 ---
 
-*Last updated: 6/2*
+*Last updated: 6/6*
