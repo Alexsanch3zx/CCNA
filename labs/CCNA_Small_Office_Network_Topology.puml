@@ -1,0 +1,114 @@
+@startuml CCNA_Small_Office_Network_Topology
+' CCNA Small Office Network Lab — full topology
+' Render: plantuml labs/CCNA_Small_Office_Network_Topology.puml
+' Or: https://www.plantuml.com/plantuml
+!theme plain
+top to bottom direction
+skinparam backgroundColor #FAFAFA
+skinparam shadowing false
+skinparam roundcorner 10
+skinparam defaultFontName Arial
+skinparam ArrowColor #37474F
+skinparam ArrowThickness 1.5
+skinparam nodesep 40
+skinparam ranksep 50
+
+title **CCNA Small Office Network Lab**\nRouter-on-a-Stick | 4 VLANs | DHCP | DNS | HTTP | ACL | Port Security
+
+legend top
+  |= Color |= VLAN | Network | Gateway |
+  | <#BBDEFB> | 10 HR | 192.168.10.0/24 | 192.168.10.1 |
+  | <#C8E6C9> | 20 Sales | 192.168.20.0/24 | 192.168.20.1 |
+  | <#FFE0B2> | 30 Servers | 192.168.30.0/24 | 192.168.30.1 |
+  | <#E1BEE7> | 40 Printers | 192.168.40.0/24 | 192.168.40.1 |
+  ----
+  **Access** = one VLAN, untagged | **Trunk** = 802.1Q, all VLANs | **dot1Q** = router subinterface tag
+  **DHCP** on R1 | **DNS/HTTP** on Server0 | **ACL 100** on Gig0/0.20 in | **Port security** SW1 Fa0/1
+endlegend
+
+' ═══════════ ROUTER ═══════════
+package "R1 (2911) — Router-on-a-Stick" #FFCCBC {
+  object "Gig0/0\n(physical)\nno IP | no shutdown" as R1_PHY #FFFFFF
+  together {
+    object "Gig0/0.10\ndot1Q 10\n192.168.10.1/24" as R1_10 #BBDEFB
+    object "Gig0/0.20\ndot1Q 20\n192.168.20.1/24\nACL 100 in" as R1_20 #C8E6C9
+    object "Gig0/0.30\ndot1Q 30\n192.168.30.1/24" as R1_30 #FFE0B2
+    object "Gig0/0.40\ndot1Q 40\n192.168.40.1/24" as R1_40 #E1BEE7
+  }
+  R1_PHY -[hidden]down- R1_10
+}
+
+' ═══════════ SWITCH 1 ═══════════
+package "SW1 (2960)" #CFD8DC {
+  object "Fa0/24\nTRUNK → R1" as SW1_24 #B0BEC5
+  object "Fa0/23\nTRUNK → SW2" as SW1_23 #B0BEC5
+  object "Fa0/1 Access VLAN10\nPort Security" as SW1_1 #BBDEFB
+  object "Fa0/2 Access VLAN10" as SW1_2 #BBDEFB
+}
+
+' ═══════════ SWITCH 2 ═══════════
+package "SW2 (2960)" #CFD8DC {
+  object "Fa0/23\nTRUNK → SW1" as SW2_23 #B0BEC5
+  object "Fa0/1 Access VLAN20" as SW2_1 #C8E6C9
+  object "Fa0/2 Access VLAN20" as SW2_2 #C8E6C9
+  object "Fa0/3 Access VLAN30" as SW2_3 #FFE0B2
+  object "Fa0/4 Access VLAN40" as SW2_4 #E1BEE7
+}
+
+' ═══════════ END DEVICES ═══════════
+together {
+  object "PC0\nVLAN10 HR\nDHCP .10\nGW .10.1" as PC0 #BBDEFB
+  object "PC1\nVLAN10 HR\nDHCP .11\nGW .10.1" as PC1 #BBDEFB
+}
+together {
+  object "PC2\nVLAN20 Sales\nDHCP .10\nGW .20.1" as PC2 #C8E6C9
+  object "PC3\nVLAN20 Sales\nDHCP .11\nGW .20.1" as PC3 #C8E6C9
+}
+object "Server0\nVLAN30\n192.168.30.10 static\nDNS + HTTP\ncompany.local" as SRV #FFE0B2
+object "Printer0\nVLAN40\n192.168.40.10 static" as PRN #E1BEE7
+
+' ═══════════ LINKS ═══════════
+R1_PHY --> SW1_24 : **Trunk**\nGig0/0 ↔ Fa0/24\n802.1Q all VLANs
+SW1_23 --> SW2_23 : **Trunk**\nFa0/23 ↔ Fa0/23\n802.1Q VLANs 10–40
+
+SW1_1 --> PC0 : Fa0/1 ↔ Fa0
+SW1_2 --> PC1 : Fa0/2 ↔ Fa0
+SW2_1 --> PC2 : Fa0/1 ↔ Fa0
+SW2_2 --> PC3 : Fa0/2 ↔ Fa0
+SW2_3 --> SRV : Fa0/3 ↔ Fa0
+SW2_4 --> PRN : Fa0/4 ↔ Fa0
+
+' ═══════════ ROUTER-ON-A-STICK EXPLANATION ═══════════
+note right of R1_PHY
+  **Router-on-a-Stick**
+  ----
+  1. One cable: Gig0/0 → SW1 Fa0/24 (**trunk**)
+  2. Subinterface per VLAN (dot1Q + gateway IP)
+  3. Switch tags frames; router routes between subnets
+  4. Cross-VLAN traffic **must** pass R1
+end note
+
+note bottom of SW1_24
+  **SW1 trunks:** Fa0/23 (to SW2), Fa0/24 (to R1)
+end note
+
+note bottom of SRV
+  **Services**
+  DNS: company.local → 192.168.30.10
+  HTTP: port 80
+  DHCP pools on **R1** for all VLANs
+end note
+
+note as CABLING
+  **Cabling (copper straight-through)**
+  ----
+  R1 Gig0/0 ↔ SW1 Fa0/24
+  SW1 Fa0/1 ↔ PC0 | SW1 Fa0/2 ↔ PC1
+  SW1 Fa0/23 ↔ SW2 Fa0/23
+  SW2 Fa0/1 ↔ PC2 | SW2 Fa0/2 ↔ PC3
+  SW2 Fa0/3 ↔ Server0 | SW2 Fa0/4 ↔ Printer0
+end note
+
+CABLING .. SW2_4
+
+@enduml
