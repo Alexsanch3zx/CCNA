@@ -1,0 +1,125 @@
+@startuml CCNA_Multi_Site_OSPF_NAT_Topology
+' CCNA Multi-Site OSPF & NAT Lab — full topology
+' Render: plantuml labs/CCNA_Multi_Site_OSPF_NAT_Topology.puml
+' Or: https://www.plantuml.com/plantuml
+!theme plain
+left to right direction
+skinparam backgroundColor #FAFAFA
+skinparam shadowing false
+skinparam roundcorner 10
+skinparam defaultFontName Arial
+skinparam ArrowColor #37474F
+skinparam ArrowThickness 1.5
+skinparam nodesep 35
+skinparam ranksep 45
+
+title **CCNA Multi-Site OSPF & NAT Lab**\nWAN Serial Links | OSPF Area 0 | Default Route | PAT | Extended ACL | SSH
+
+legend top
+  |= Color |= Site / Role | Network | Gateway |
+  | <#BBDEFB> | HQ Mgmt | 192.168.1.0/24 | 192.168.1.1 |
+  | <#C8E6C9> | HQ Engineering | 192.168.10.0/24 | 192.168.10.1 |
+  | <#FFCCBC> | HQ Guest | 192.168.99.0/24 | 192.168.99.1 |
+  | <#FFE0B2> | Branch Sales | 192.168.2.0/24 | 192.168.2.1 |
+  | <#E1BEE7> | Branch IT | 192.168.20.0/24 | 192.168.20.1 |
+  | <#CFD8DC> | WAN / ISP | see link labels | — |
+  ----
+  **Serial** = DCE clock on R-HQ (HQ–Branch, HQ–ISP) | **NAT inside** = HQ LANs | **NAT outside** = R-HQ s0/0/1
+  **OSPF** on R-HQ + R-Branch only | **PAT** on R-HQ | Guest ACL on g0/2 in
+endlegend
+
+' ═══════════ CLOUD / INTERNET ═══════════
+package "Cloud / Internet" #ECEFF1 {
+  object "Public host\n203.0.113.10/24\nGW 203.0.113.1" as CLOUD #FFFFFF
+}
+
+' ═══════════ ISP ROUTER ═══════════
+package "R-ISP (2911)" #CFD8DC {
+  object "Gig0/0\n203.0.113.1/24\n→ Cloud" as ISP_G0 #CFD8DC
+  object "S0/0/0\n10.0.0.2/30\n→ R-HQ" as ISP_S0 #B0BEC5
+  object "Lo0\n3.3.3.3/32" as ISP_LO #FFFFFF
+}
+
+' ═══════════ HQ ROUTER ═══════════
+package "R-HQ (2911) — NAT + OSPF" #FFCCBC {
+  object "Gig0/0\n192.168.1.1/24\nNAT inside" as HQ_G0 #BBDEFB
+  object "Gig0/1\n192.168.10.1/24\nNAT inside" as HQ_G1 #C8E6C9
+  object "Gig0/2\n192.168.99.1/24\nNAT inside\nACL in" as HQ_G2 #FFCCBC
+  object "S0/0/0\n172.16.0.1/30\nDCE clock\n→ Branch" as HQ_S0 #B0BEC5
+  object "S0/0/1\n10.0.0.1/30\nNAT outside\n→ ISP" as HQ_S1 #B0BEC5
+  object "Lo0\n1.1.1.1/32\nOSPF RID" as HQ_LO #FFFFFF
+}
+
+' ═══════════ BRANCH ROUTER ═══════════
+package "R-Branch (2911) — OSPF" #E1BEE7 {
+  object "Gig0/0\n192.168.2.1/24\n→ SW-Branch" as BR_G0 #FFE0B2
+  object "Gig0/1\n192.168.20.1/24\n→ PC6" as BR_G1 #E1BEE7
+  object "S0/0/0\n172.16.0.2/30\n→ R-HQ" as BR_S0 #B0BEC5
+  object "Lo0\n2.2.2.2/32\nOSPF RID" as BR_LO #FFFFFF
+}
+
+' ═══════════ SWITCHES ═══════════
+package "SW-HQ (2960)" #CFD8DC {
+  object "Fa0/24\n→ R-HQ g0/0" as SWH_24 #BBDEFB
+  object "Fa0/1\n→ PC1" as SWH_1 #BBDEFB
+}
+package "SW-Branch (2960)" #CFD8DC {
+  object "Fa0/24\n→ R-Branch g0/0" as SWB_24 #FFE0B2
+  object "Fa0/1\n→ PC4" as SWB_1 #FFE0B2
+  object "Fa0/2\n→ PC5" as SWB_2 #FFE0B2
+}
+
+' ═══════════ END DEVICES ═══════════
+object "PC1\nMgmt\n192.168.1.10\nGW .1.1" as PC1 #BBDEFB
+object "PC2\nEngineering\n192.168.10.10\nGW .10.1" as PC2 #C8E6C9
+object "PC3\nGuest\n192.168.99.10\nGW .99.1" as PC3 #FFCCBC
+object "PC4\nSales\n192.168.2.10\nGW .2.1" as PC4 #FFE0B2
+object "PC5\nSales\n192.168.2.11\nGW .2.1" as PC5 #FFE0B2
+object "PC6\nIT\n192.168.20.10\nGW .20.1" as PC6 #E1BEE7
+
+' ═══════════ WAN + ISP LINKS ═══════════
+CLOUD --> ISP_G0 : **Copper ST**\nGig0/0 ↔ Cloud\n203.0.113.0/24
+ISP_S0 --> HQ_S1 : **Serial DCE**\nS0/0/0 ↔ S0/0/1\n10.0.0.0/30
+HQ_S0 --> BR_S0 : **Serial DCE**\nS0/0/0 ↔ S0/0/0\n172.16.0.0/30\nclock on R-HQ
+
+' ═══════════ HQ LAN LINKS ═══════════
+HQ_G0 --> SWH_24 : **Copper ST**\nGig0/0 ↔ Fa0/24
+SWH_1 --> PC1 : Fa0/1 ↔ Fa0
+HQ_G1 --> PC2 : **Copper ST**\nGig0/1 ↔ Fa0
+HQ_G2 --> PC3 : **Copper ST**\nGig0/2 ↔ Fa0
+
+' ═══════════ BRANCH LAN LINKS ═══════════
+BR_G0 --> SWB_24 : **Copper ST**\nGig0/0 ↔ Fa0/24
+SWB_1 --> PC4 : Fa0/1 ↔ Fa0
+SWB_2 --> PC5 : Fa0/2 ↔ Fa0
+BR_G1 --> PC6 : **Copper ST**\nGig0/1 ↔ Fa0
+
+note bottom of HQ_S1
+  **NAT / PAT at HQ**
+  ----
+  inside: g0/0, g0/1, g0/2
+  outside: s0/0/1
+  `ip nat inside source list 1 interface s0/0/1 overload`
+  Default route: `ip route 0.0.0.0 0.0.0.0 10.0.0.2`
+  OSPF: `default-information originate`
+end note
+
+note bottom of BR_S0
+  **OSPF Area 0**
+  ----
+  Neighbor: R-HQ ↔ R-Branch on 172.16.0.0/30
+  Branch learns default via OSPF (O*E2)
+  Internet via HQ NAT (Step 10)
+end note
+
+note as CABLING
+  **Cabling summary**
+  ----
+  **Serial:** R-HQ s0/0/0 ↔ R-Branch s0/0/0 | R-HQ s0/0/1 ↔ R-ISP s0/0/0
+  **Copper ST:** all Gig/FastEthernet links
+  **DCE clock rate** on R-HQ serial ports (128000)
+end note
+
+CABLING .. BR_G1
+
+@enduml
