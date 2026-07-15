@@ -2,11 +2,11 @@
 
 ## Lab Overview
 
-An **Extended Service Set (ESS)** is a wireless LAN architecture where **multiple Access Points (APs)** connect to the same wired network and share the **same SSID**. That extends coverage and lets clients **roam** between AP cells while staying on one logical WLAN.
+An **Extended Service Set (ESS)** is a wireless LAN architecture where **multiple Access Points (APs)** connect to the same wired network and share the **same Service Set Identifier (**SSID). That extends coverage and lets clients **roam** between AP cells while staying on one logical WLAN.
 
 This lab builds a small ESS in Packet Tracer: two APs, a switch, a router with DHCP, wireless and wired clients, then verifies connectivity and practices troubleshooting.
 
-**Concepts covered:** BSS vs ESS, SSID / BSSID, AP bridging to Ethernet, DHCP for wireless clients, roaming, and wireless + Layer 3 troubleshooting.
+**Concepts covered:** BSS vs ESS, **Service Set Identifier (**SSID) / BSSID, AP bridging to Ethernet, DHCP for wireless clients, roaming, and wireless + Layer 3 troubleshooting.
 
 **Prerequisite:** Basic switch CLI, IP addressing, and DHCP from earlier labs.
 
@@ -24,7 +24,7 @@ This lab builds a small ESS in Packet Tracer: two APs, a switch, a router with D
 | **DS**    | Distribution system (typically the switch/router LAN tying APs together)              |
 
 
-**Design rule for this lab:** Same SSID + same authentication on both APs + both APs on the **same VLAN/subnet** = clients keep the same IP and default gateway when they roam.
+**Design rule for this lab:** Same **Service Set Identifier (**SSID) + same authentication on both APs + both APs on the **same VLAN/subnet** = clients keep the same IP and default gateway when they roam.
 
 ---
 
@@ -49,9 +49,7 @@ This lab builds a small ESS in Packet Tracer: two APs, a switch, a router with D
                  Smartphone0
 ```
 
-![ESS Wireless LAN Topology (Packet Tracer)](top.png)
-
-![ESS Wireless LAN Topology — labeled zones](ESS_Wireless_Topology.png)
+ESS Wireless LAN Topology (Packet Tracer)ESS Wireless LAN Topology — labeled zones
 
 Both APs connect to **SW1** as wired Ethernet hosts. Wireless clients associate to either AP and receive addresses from **R1 DHCP** on `192.168.10.0/24`.
 
@@ -111,7 +109,7 @@ Both APs connect to **SW1** as wired Ethernet hosts. Wireless clients associate 
 | DHCP           | Clients: **DHCP** via R1                                                 |
 
 
-Both APs must use the **identical SSID and security**. Different SSIDs = IBSS-like / separate networks, not one ESS.
+Both APs must use the **identical Service Set Identifier (**SSID) **and security**. Different SSIDs = IBSS-like / separate networks, not one ESS.
 
 ---
 
