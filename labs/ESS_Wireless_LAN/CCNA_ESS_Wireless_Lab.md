@@ -49,7 +49,9 @@ This lab builds a small ESS in Packet Tracer: two APs, a switch, a router with D
                  Smartphone0
 ```
 
-![ESS Wireless LAN Topology](top.png)
+![ESS Wireless LAN Topology (Packet Tracer)](top.png)
+
+![ESS Wireless LAN Topology — labeled zones](ESS_Wireless_Topology.png)
 
 Both APs connect to **SW1** as wired Ethernet hosts. Wireless clients associate to either AP and receive addresses from **R1 DHCP** on `192.168.10.0/24`.
 
@@ -194,29 +196,76 @@ write memory
 
 # Step 3 — Configure Both Access Points (Same SSID)
 
-On **AP1** and **AP2** (GUI: click AP → Config → Port 1 / wireless):
+AP-PT has **no CLI**. You configure it with the GUI. Do this on **AP1**, then the same on **AP2** (only the **channel** differs).
 
-1. Set **SSID** to `Campus-WiFi` on both.
-2. Set **authentication** to the same WPA2-PSK (or available option) and passphrase.
-3. Set **Channel** to **1** on AP1 and **6** on AP2.
-4. Leave Ethernet toward the switch enabled / default.
+### Where to click (AP-PT)
 
-Optional CLI-style note: many PT APs are GUI-only — match settings carefully; a typo in SSID or passphrase breaks ESS roaming.
+1. Click the access point on the workspace.
+2. Open the **Config** tab.
+3. In the left pane, under **INTERFACE**, click **Port 1** (this is the **wireless** radio — not the Ethernet port).
+
+### Settings on Port 1 (wireless)
+
+
+| Setting             | AP1           | AP2                                 |
+| ------------------- | ------------- | ----------------------------------- |
+| **SSID**            | `Campus-WiFi` | `Campus-WiFi` (exact same spelling) |
+| **Authentication**  | WPA2-PSK      | WPA2-PSK                            |
+| **PSK Pass Phrase** | `CiscoLab123` | `CiscoLab123` (exact same)          |
+| **Channel**         | `1`           | `6`                                 |
+
+
+Leave **Port 0** (Ethernet toward the switch) alone — default / enabled is fine. You usually do **not** need to set an IP on the AP for this lab; it just bridges wireless clients onto the switch.
+
+### Why this matters
+
+- Same **SSID + password** on both APs = one ESS (clients see one network and can roam).
+- Different **channels** (1 and 6) reduces interference between the two APs.
+- A typo in SSID or passphrase (e.g. `Campus-Wifi` vs `Campus-WiFi`) means you built two separate networks, not an ESS.
+
+**Check:** After both APs are set, a laptop’s wireless list should show **one** `Campus-WiFi` SSID (you may still associate to either AP by physical location).
 
 ---
 
 # Step 4 — Connect Wireless Clients
 
-### Laptop0
+### Laptop0 — add a wireless NIC first (required)
 
-1. Desktop → **PC Wireless** (or Config → Wireless0).
-2. Connect to SSID `**Campus-WiFi`** with the shared passphrase.
-3. Desktop → IP Configuration → **DHCP**.
+Laptop-PT has **no Wi‑Fi card by default**. If **PC Wireless** says *“A WMP300N or WPC300N wireless interface is required”*, install one:
+
+1. Click **Laptop0** → **Physical** tab.
+2. Click the laptop’s **power button** to turn it **OFF**.
+3. Drag the current module out of the side slot into inventory (bottom).
+4. Drag **WPC300N** (or **WMP300N**) from modules into the empty slot.
+5. Click the power button again to turn it **ON**.
+
+Then connect:
+
+1. **Desktop** → **PC Wireless**.
+2. Connect to SSID `**Campus-WiFi`** with the same passphrase/key as the APs.
+3. **Desktop** → **IP Configuration** → **DHCP**.
 
 ### Smartphone0
 
-1. Wireless / Config → associate to `**Campus-WiFi`**.
-2. IP Configuration → **DHCP**.
+Smartphones already have Wi‑Fi built in (no WPC300N needed). Drag **Smartphone0** close to **AP1** or **AP2** so it is in range.
+
+**Way A — Config tab (most reliable):**
+
+1. Click **Smartphone0** → **Config** tab.
+2. Left pane → **INTERFACE** → **Wireless0**.
+3. Set:
+  - **SSID:** `Campus-WiFi`
+  - **Authentication:** same as the APs (e.g. **WEP** or **WPA2-PSK**)
+  - **Key / Pass Phrase:** same as the APs
+4. Left pane → **Settings** (or **Global Settings**) → **IP Configuration** → **DHCP**.
+
+**Way B — Desktop:**
+
+1. **Desktop** → **Wireless** (or the Wi‑Fi / Config wireless icon, depending on PT version).
+2. Connect to / enter SSID `**Campus-WiFi`** with the same security and key as the APs.
+3. **Desktop** → **IP Configuration** → **DHCP**.
+
+**If it won’t connect:** security type or key doesn’t match the APs, or the phone is too far from both APs — move it closer and double-check SSID/key (including WEP hex key if you used WEP).
 
 ### PC0 (wired control)
 
