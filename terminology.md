@@ -355,6 +355,9 @@ Quick definitions for terms used across this repo. Terms are grouped by topic, t
 | TCP/IP model | [TCP_IP-model/TCP-IP-Model-Study-Guide.md](TCP_IP-model/TCP-IP-Model-Study-Guide.md) |
 | Binary and hex | [binary-hexadecimal/Binary-and-Hex-for-Networking.md](binary-hexadecimal/Binary-and-Hex-for-Networking.md) |
 | Subnetting | [IP-addresses/subnetting.md](IP-addresses/subnetting.md) |
+| Spanning Tree | [STP-Spanning-Tree-Study-Guide.md](STP-Spanning-Tree-Study-Guide.md) |
+| NAT / PAT | [IP-addresses/NAT_PAT_Notes.md](IP-addresses/NAT_PAT_Notes.md) |
+| Access Control Lists | [ACL-Study-Guide.md](ACL-Study-Guide.md) |
 | Commands | [cheat-sheets/command-cheat-sheet.md](cheat-sheets/command-cheat-sheet.md) |
 | Active Directory | [active-directory/Active-Directory-Study-Guide.md](active-directory/Active-Directory-Study-Guide.md) |
 | Labs | [labs/](labs/) |
