@@ -49,7 +49,9 @@ This lab builds a small ESS in Packet Tracer: two APs, a switch, a router with D
                  Smartphone0
 ```
 
-ESS Wireless LAN Topology (Packet Tracer)ESS Wireless LAN Topology — labeled zones
+ESS Wireless LAN Topology (Packet Tracer)
+
+ESS Wireless LAN Topology — labeled zones
 
 Both APs connect to **SW1** as wired Ethernet hosts. Wireless clients associate to either AP and receive addresses from **R1 DHCP** on `192.168.10.0/24`.
 
@@ -432,4 +434,3 @@ This hands-on lab enhanced understanding of wireless networking concepts, ESS ar
 - Screenshot of topology with both APs and SSID labeled
 - `show ip dhcp binding` output after clients associate
 - Short note: what stayed the same when Laptop0 roamed (SSID, IP, gateway)
-
