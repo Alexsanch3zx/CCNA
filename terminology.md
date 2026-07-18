@@ -358,6 +358,9 @@ Quick definitions for terms used across this repo. Terms are grouped by topic, t
 | Spanning Tree | [STP-Spanning-Tree-Study-Guide.md](STP-Spanning-Tree-Study-Guide.md) |
 | NAT / PAT | [IP-addresses/NAT_PAT_Notes.md](IP-addresses/NAT_PAT_Notes.md) |
 | Access Control Lists | [ACL-Study-Guide.md](ACL-Study-Guide.md) |
+| First-hop redundancy | [redundancy/First-Hop-Redundancy-Study-Guide.md](redundancy/First-Hop-Redundancy-Study-Guide.md) |
+| Layer 2 security | [security/Layer-2-Security-Study-Guide.md](security/Layer-2-Security-Study-Guide.md) |
+| Device hardening | [security/Device-Hardening-Study-Guide.md](security/Device-Hardening-Study-Guide.md) |
 | Commands | [cheat-sheets/command-cheat-sheet.md](cheat-sheets/command-cheat-sheet.md) |
 | Active Directory | [active-directory/Active-Directory-Study-Guide.md](active-directory/Active-Directory-Study-Guide.md) |
 | Labs | [labs/](labs/) |
