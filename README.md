@@ -35,6 +35,42 @@ Short entries are fine. Consistency matters more than length.
 
 ## Reflections
 
+### 2026-07-21 — Wireless principles (BSS, ESS, SSID, roaming)
+
+**What I learned:** Wireless LANs still end up on a **wired** switch/router — the AP is a bridge between radio and Ethernet. A **BSS** is one AP and its clients (one cell). An **ESS** is two or more BSSs that share the **same SSID**, same security, and the same LAN/VLAN so a client can **roam** between APs and keep the same IP and gateway. The **SSID** is the network name people see; the **BSSID** is usually the AP radio’s MAC and identifies *which* cell you’re on. Non-overlapping channels (often **1, 6, 11** in 2.4 GHz) matter so neighboring APs don’t interfere.
+
+**What clicked:** In the [ESS Wireless LAN lab](labs/ESS_Wireless_LAN/CCNA_ESS_Wireless_Lab.md), two APs with identical `Campus-WiFi` settings felt like one WLAN, not two networks. Roaming kept working because both APs sat on the same switch VLAN and got DHCP from the same router pool. Typo the SSID on one AP and you suddenly have two networks — that made ESS vs “two separate WLANs” obvious.
+
+**Still fuzzy:** Enterprise wireless (controllers, CAPWAP, WPA2/WPA3-Enterprise with RADIUS) vs the autonomous AP-PT model in Packet Tracer — I know the names more than the packet flow.
+
+**Next steps:** Re-run the ESS lab roaming check; review wireless terms in [terminology.md](terminology.md); practice channel planning and “associates but no IP” troubleshooting (DHCP vs AP vs SSID mismatch).
+
+---
+
+### 2026-07-21 — Port security (sticky MAC and violation shutdown)
+
+**What I learned:** **Port security** limits which **MAC addresses** are allowed on a switch access port. Typical lab pattern: `switchport port-security`, `maximum 1`, `mac-address sticky` (learn and remember the first host’s MAC), and `violation shutdown`. If a second device plugs into that port and sends traffic, the switch treats it as a violation. With **shutdown** mode the port goes **err-disabled** / **Secure-shutdown** until you recover it (`shutdown` then `no shutdown`). Softer modes like **restrict** or **protect** drop unauthorized frames (and may count violations) without killing the whole port.
+
+**What clicked:** Port security is about **how many / which MACs** on a port — not the same job as DHCP snooping or DAI. Sticky learning made sense after I generated traffic from the legit PC first (`ping` the gateway), then checked `show port-security interface fa0/1` for **Secure-up**, sticky count **1**, and violation count **0**. Swapping in another device flipped it to **Secure-shutdown** — that was the “unauthorized laptop on my desk drop” moment.
+
+**Still fuzzy:** Whether sticky MACs survive a reload without saving them into the running/startup config the way I expect in Packet Tracer vs real IOS.
+
+**Next steps:** Finish the port-security violation demo in the [Layer 2 Security Lab](labs/Layer2_Security_DHCP_Snooping_DAI/CCNA_Layer2_Security_Lab.md); compare with the earlier pass in the [Small Office Network Lab](labs/CCNA_Small_Office_Network_Lab.md); practice `show port-security address` after sticky learning.
+
+---
+
+### 2026-07-21 — MAC address tables and Spanning Tree Protocol (STP)
+
+**What I learned:** A switch builds a **MAC address table** by learning the **source MAC** on each frame and the port it arrived on. Later, if the **destination MAC** is in the table, the switch **forwards** out only that port; if unknown (or broadcast), it **floods**. That flooding is why redundant switch links without loop control are dangerous — frames can circle forever. **Spanning Tree Protocol (STP)** stops Layer 2 loops by electing a **root bridge** and putting some ports in a **blocking** (or alternate) state so only one active path exists in the logical tree, while physical redundancy stays for failover.
+
+**What clicked:** MAC learning and STP solve different halves of the same story. The MAC table answers “where is this host?” STP answers “which links are allowed to forward so floods don’t storm?” Without STP, MAC tables also go unstable (**flapping** — the same MAC learned on different ports as looped frames bounce around). Commands that made this concrete: `show mac address-table` for learning/forwarding, and `show spanning-tree` for root, roles (root / designated / blocked), and which VLAN’s tree I’m looking at (Rapid PVST+ is per VLAN).
+
+**Still fuzzy:** Quickly picking **root port vs designated port** on a diagram under time pressure, and when to use `spanning-tree vlan X root primary` vs setting priority by hand.
+
+**Next steps:** Re-read [MAC-addresses.md](MAC-addresses.md) and [STP-Spanning-Tree-Study-Guide.md](STP-Spanning-Tree-Study-Guide.md); in the [Layer 3 Switching / EtherChannel lab](labs/CCNA_Layer3_Switching_Redundancy_Lab.md), force a root and watch a port block, then check the MAC table before and after breaking a link.
+
+---
+
 ### 2026-07-21 — Packet Tracer: PCs cannot run a DHCP server (Layer 2 Security Lab)
 
 **What I learned:** While building the rogue DHCP demo in the [Layer 2 Security Lab](labs/Layer2_Security_DHCP_Snooping_DAI/CCNA_Layer2_Security_Lab.md), I found that Packet Tracer **PC** devices do **not** support running a DHCP **server**. A PC can be a DHCP **client** (Desktop → IP Configuration → DHCP), but there is no **Services → DHCP** server to turn on like you might expect on a real compromised host.
