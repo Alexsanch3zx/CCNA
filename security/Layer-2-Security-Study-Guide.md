@@ -4,7 +4,7 @@
 
 **Folder:** `security/` — network and device security theory (pairs with [Device-Hardening-Study-Guide.md](Device-Hardening-Study-Guide.md) and [../ACL-Study-Guide.md](../ACL-Study-Guide.md)).
 
-**Related files:** [../terminology.md](../terminology.md) · [../MAC-addresses.md](../MAC-addresses.md) · [../IP-addresses/DHCP_Notes.md](../IP-addresses/DHCP_Notes.md) · [../cheat-sheets/command-cheat-sheet.md](../cheat-sheets/command-cheat-sheet.md) · [../labs/CCNA_Small_Office_Network_Lab.md](../labs/CCNA_Small_Office_Network_Lab.md)
+**Related files:** [../terminology.md](../terminology.md) · [../MAC-addresses.md](../MAC-addresses.md) · [../IP-addresses/DHCP_Notes.md](../IP-addresses/DHCP_Notes.md) · [../cheat-sheets/command-cheat-sheet.md](../cheat-sheets/command-cheat-sheet.md) · [../labs/CCNA_Small_Office_Network_Lab.md](../labs/CCNA_Small_Office_Network_Lab.md) · **Hands-on lab:** [../labs/Layer2_Security_DHCP_Snooping_DAI/CCNA_Layer2_Security_Lab.md](../labs/Layer2_Security_DHCP_Snooping_DAI/CCNA_Layer2_Security_Lab.md)
 
 ---
 

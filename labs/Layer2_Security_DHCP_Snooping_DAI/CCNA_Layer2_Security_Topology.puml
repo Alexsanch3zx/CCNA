@@ -1,0 +1,80 @@
+@startuml CCNA_Layer2_Security_Topology
+' CCNA Layer 2 Security Lab — DHCP Snooping, DAI, Port Security
+' Render: plantuml labs/Layer2_Security_DHCP_Snooping_DAI/CCNA_Layer2_Security_Topology.puml
+' Or: https://www.plantuml.com/plantuml
+!theme plain
+top to bottom direction
+skinparam backgroundColor #FAFAFA
+skinparam shadowing false
+skinparam roundcorner 10
+skinparam defaultFontName Arial
+skinparam ArrowColor #37474F
+skinparam ArrowThickness 1.5
+skinparam nodesep 40
+skinparam ranksep 45
+
+title **CCNA Layer 2 Security Lab**\nDHCP Snooping | DAI | Port Security | Rogue DHCP Demo
+
+legend top
+  |= Color |= VLAN | Network | Gateway |
+  | <#BBDEFB> | 10 USER | 192.168.10.0/24 | 192.168.10.1 |
+  | <#C8E6C9> | 20 VOICE | 192.168.20.0/24 | 192.168.20.1 |
+  | <#FFCDD2> | Attacker | same VLAN 10 | spoofs DHCP / ARP |
+  ----
+  **Trusted** = Fa0/24 toward R1 (real DHCP) | **Untrusted** = Fa0/1–Fa0/3 (default)
+  **Order:** snooping + trust → bindings → DAI → port security / IPSG
+endlegend
+
+package "R1 (2911) — Legitimate DHCP + Gateways" #FFCCBC {
+  object "Gig0/0\n(physical)\nno IP | no shutdown" as R1_PHY #FFFFFF
+  together {
+    object "Gig0/0.10\ndot1Q 10\n192.168.10.1/24\nDHCP pool USER" as R1_10 #BBDEFB
+    object "Gig0/0.20\ndot1Q 20\n192.168.20.1/24\nDHCP pool VOICE" as R1_20 #C8E6C9
+  }
+  R1_PHY -[hidden]down- R1_10
+}
+
+package "SW1 (2960) — L2 Security Edge" #CFD8DC {
+  object "Fa0/24 TRUNK\nip dhcp snooping trust\nip arp inspection trust" as SW1_24 #A5D6A7
+  object "Fa0/1 Access VLAN10\nUNTRUSTED\nPort Security max 1 sticky" as SW1_1 #BBDEFB
+  object "Fa0/2 Access VLAN10\nUNTRUSTED\n(attacker port)" as SW1_2 #FFCDD2
+  object "Fa0/3 Access VLAN20\nUNTRUSTED" as SW1_3 #C8E6C9
+}
+
+together {
+  object "PC0\nVLAN10 USER\nDHCP from R1\nGW .10.1" as PC0 #BBDEFB
+  object "ATTACKER\nVLAN10\nRogue DHCP / ARP spoof\nstatic .50 for demos" as ATK #FFCDD2
+  object "PC1\nVLAN20 VOICE\nDHCP from R1\nGW .20.1" as PC1 #C8E6C9
+}
+
+R1_PHY --> SW1_24 : **Trunk**\nGig0/0 ↔ Fa0/24\n802.1Q VLAN 10,20
+SW1_1 --> PC0 : Fa0/1 ↔ Fa0
+SW1_2 --> ATK : Fa0/2 ↔ Fa0
+SW1_3 --> PC1 : Fa0/3 ↔ Fa0
+
+note right of R1_PHY
+  **Only legitimate DHCP**
+  ----
+  Offers/Acks must arrive
+  via **trusted** Fa0/24
+  Untrusted Fa0/2 Offers → **drop**
+end note
+
+note bottom of SW1_24
+  **Binding table feeds DAI**
+  show ip dhcp snooping binding
+  show ip arp inspection
+end note
+
+note as ATTACK_FLOW
+  **Attack demos**
+  ----
+  1. ATTACKER DHCP On → bad gateway
+  2. Enable snooping → Offers from Fa0/2 dropped
+  3. Enable DAI → forged ARP vs bindings dropped
+  4. Swap MAC on Fa0/1 → port-security violation
+end note
+
+ATTACK_FLOW .. ATK
+
+@enduml
