@@ -43,7 +43,7 @@ package "SW1 (2960) — L2 Security Edge" #CFD8DC {
 
 together {
   object "PC0\nVLAN10 USER\nDHCP from R1\nGW .10.1" as PC0 #BBDEFB
-  object "ATTACKER\nVLAN10\nRogue DHCP / ARP spoof\nstatic .50 for demos" as ATK #FFCDD2
+  object "ROGUE (Server-PT)\nVLAN10\nRogue DHCP service\nstatic 192.168.10.50" as ATK #FFCDD2
   object "PC1\nVLAN20 VOICE\nDHCP from R1\nGW .20.1" as PC1 #C8E6C9
 }
 
@@ -69,7 +69,7 @@ end note
 note as ATTACK_FLOW
   **Attack demos**
   ----
-  1. ATTACKER DHCP On → bad gateway
+  1. ROGUE Server DHCP On → bad gateway
   2. Enable snooping → Offers from Fa0/2 dropped
   3. Enable DAI → forged ARP vs bindings dropped
   4. Swap MAC on Fa0/1 → port-security violation

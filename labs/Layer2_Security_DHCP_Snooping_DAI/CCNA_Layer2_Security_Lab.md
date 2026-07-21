@@ -54,12 +54,12 @@ You will:
          Fa0/1             Fa0/2              Fa0/3
          VLAN 10           VLAN 10            VLAN 20
             |                 |                  |
-          PC0               ATTACKER           PC1
-       (legit user)      (rogue DHCP /        (legit user)
-                          ARP spoof later)
+          PC0               ROGUE              PC1
+       (legit user)      (Server-PT:          (legit user)
+                          rogue DHCP)
 ```
 
-**Story:** PC0 and PC1 are normal clients. The **ATTACKER** PC will first run a fake DHCP server, then later send bad ARP. Your job is to configure SW1 so those attacks fail while legitimate DHCP still works.
+**Story:** PC0 and PC1 are normal clients. **ROGUE** is a **Server-PT** (Packet Tracer PCs cannot run DHCP server). It will offer a fake DHCP lease first, then sit on the untrusted port for DAI/port-security demos. Your job is to configure SW1 so those attacks fail while legitimate DHCP still works.
 
 Topology diagram: `CCNA_Layer2_Security_Topology.puml` (same folder).
 
@@ -73,7 +73,7 @@ Topology diagram: `CCNA_Layer2_Security_Topology.puml` (same folder).
 | 1× Router (2911) – `R1`        | Gateways + legitimate DHCP server         |
 | 1× Switch (2960) – `SW1`       | Access switch; all L2 security features   |
 | 2× PC – `PC0`, `PC1`           | Legitimate DHCP clients                   |
-| 1× PC – `ATTACKER`             | Rogue DHCP / ARP spoof (Simulation tests) |
+| 1× **Server-PT** – `ROGUE`     | Rogue DHCP (PT PCs have no DHCP service)  |
 
 
 **Cabling (copper straight-through):**
@@ -82,7 +82,7 @@ Topology diagram: `CCNA_Layer2_Security_Topology.puml` (same folder).
 | ----------------- | ------------------ |
 | R1 ↔ SW1          | G0/0 ↔ Fa0/24      |
 | PC0 ↔ SW1         | Fa0 ↔ Fa0/1        |
-| ATTACKER ↔ SW1    | Fa0 ↔ Fa0/2        |
+| **ROGUE** ↔ SW1   | Fa0 ↔ Fa0/2        |
 | PC1 ↔ SW1         | Fa0 ↔ Fa0/3        |
 
 ---
@@ -100,7 +100,7 @@ Topology diagram: `CCNA_Layer2_Security_Topology.puml` (same folder).
 | Device   | VLAN | How it gets an IP                         |
 | -------- | ---- | ----------------------------------------- |
 | PC0      | 10   | DHCP from R1                              |
-| ATTACKER | 10   | Static for attack tests (see steps below) |
+| ROGUE    | 10   | **Static** `192.168.10.50` (for rogue DHCP) |
 | PC1      | 20   | DHCP from R1                              |
 | R1       | —    | Subinterfaces `.10` / `.20` as above      |
 
@@ -115,6 +115,17 @@ Topology diagram: `CCNA_Layer2_Security_Topology.puml` (same folder).
 ---
 
 # Step 1: Baseline — VLANs, Trunk, Access Ports
+
+## Cabling first (do this before CLI)
+
+| From | To | Cable |
+| ---- | -- | ----- |
+| R1 **GigabitEthernet0/0** | SW1 **FastEthernet0/24** | Copper **Straight-Through** |
+| PC0 | SW1 Fa0/1 | Straight-Through |
+| ROGUE | SW1 Fa0/2 | Straight-Through |
+| PC1 | SW1 Fa0/3 | Straight-Through |
+
+In Packet Tracer you should see a **green** link light on Fa0/24 once R1’s G0/0 is up (Step 2). Amber/black = wrong port, wrong cable, or interface shut.
 
 On **SW1**:
 
@@ -147,6 +158,7 @@ interface fa0/3
 
 interface fa0/24
  switchport mode trunk
+ switchport nonegotiate
  switchport trunk native vlan 99
  switchport trunk allowed vlan 10,20,99
  no shutdown
@@ -155,12 +167,18 @@ end
 write memory
 ```
 
-Verify:
+(`switchport nonegotiate` turns off DTP — good practice toward a router, which never negotiates trunks.)
+
+### Verify Step 1 (do **not** expect `show interfaces trunk` yet)
 
 ```cisco
 show vlan brief
-show interfaces trunk
+show interfaces fa0/24 switchport
+show interfaces fa0/24 status
+show running-config interface fa0/24
 ```
+
+**Important:** In Packet Tracer, `show interfaces trunk` is often **blank** until the **other end of the link is up** (R1 G0/0 `no shutdown` + cable). That does **not** mean your trunk config failed. Verify **Administrative Mode: trunk** first; re-check `show interfaces trunk` at the end of **Step 2**.
 
 **Expected — `show vlan brief`:**
 
@@ -184,27 +202,61 @@ VLAN Name                             Status    Ports
 1005 trnet-default                    active
 ```
 
-**What to notice:** Fa0/1 and Fa0/2 in VLAN **10**; Fa0/3 in VLAN **20**. Fa0/24 is a **trunk**, so it does **not** appear as an access port under a VLAN.
+**What to notice:** Fa0/1 and Fa0/2 in VLAN **10**; Fa0/3 in VLAN **20**. **Fa0/24 should not** appear under VLAN 10/20 as an access port (trunk ports are omitted from that list).
 
-**Expected — `show interfaces trunk`:**
+**Expected — `show interfaces fa0/24 switchport` (this is the real Step 1 check):**
 
 ```text
-SW1# show interfaces trunk
-
-Port        Mode         Encapsulation  Status        Native vlan
-Fa0/24      on           802.1q         trunking      99
-
-Port        Vlans allowed on trunk
-Fa0/24      10,20,99
-
-Port        Vlans allowed and active in management domain
-Fa0/24      10,20,99
-
-Port        Vlans in spanning tree forwarding state and not pruned
-Fa0/24      10,20,99
+SW1# show interfaces fa0/24 switchport
+Name: Fa0/24
+Switchport: Enabled
+Administrative Mode: trunk
+Operational Mode: down
+Administrative Trunking Encapsulation: dot1q
+...
+Trunking Native Mode VLAN: 99 (NATIVE)
 ```
 
-**What to notice:** Status **trunking**, Native vlan **99**, allowed VLANs **10,20,99**.
+**What to notice:** **Administrative Mode: trunk**. `Operational Mode: down` (or `static access`) is normal **until** R1 G0/0 is up — then it should become **trunk**.
+
+**Expected — `show running-config interface fa0/24`:**
+
+```text
+interface FastEthernet0/24
+ switchport trunk native vlan 99
+ switchport trunk allowed vlan 10,20,99
+ switchport mode trunk
+ switchport nonegotiate
+```
+
+If `switchport mode trunk` is missing from the run-config, the commands never landed on this interface (wrong port or not in interface config mode).
+
+### If config still looks wrong
+
+**Minimal trunk reset** (strips extras, then re-adds):
+
+```cisco
+configure terminal
+interface fa0/24
+ no switchport trunk allowed vlan
+ no switchport trunk native vlan
+ switchport mode access
+ switchport mode trunk
+ switchport nonegotiate
+ switchport trunk native vlan 99
+ switchport trunk allowed vlan 10,20,99
+ no shutdown
+end
+show interfaces fa0/24 switchport
+```
+
+Still stuck? Use the port that actually has the green light toward R1:
+
+```cisco
+show interfaces status
+```
+
+Find which port is **connected** to R1, then put the trunk commands on **that** interface (not necessarily Fa0/24).
 
 ---
 
@@ -244,6 +296,60 @@ ip dhcp pool VOICE
 end
 write memory
 ```
+
+**Bring the router LAN interface up before checking the trunk** — this is what makes `show interfaces trunk` populate in Packet Tracer:
+
+```cisco
+interface g0/0
+ no shutdown
+```
+
+(Already in the block above; if you configured subinterfaces first, still confirm G0/0 is **up/up**.)
+
+On **SW1**, now re-check the trunk:
+
+```cisco
+show interfaces fa0/24
+show interfaces fa0/24 switchport
+show interfaces trunk
+```
+
+**Expected — link up:**
+
+```text
+FastEthernet0/24 is up, line protocol is up
+```
+
+**Expected — operational trunk:**
+
+```text
+Administrative Mode: trunk
+Operational Mode: trunk
+```
+
+**Expected — `show interfaces trunk` (only after R1 G0/0 is up + cable):**
+
+```text
+SW1# show interfaces trunk
+
+Port        Mode         Encapsulation  Status        Native vlan
+Fa0/24      on           802.1q         trunking      99
+
+Port        Vlans allowed on trunk
+Fa0/24      10,20,99
+
+Port        Vlans allowed and active in management domain
+Fa0/24      10,20,99
+
+Port        Vlans in spanning tree forwarding state and not pruned
+Fa0/24      10,20,99
+```
+
+If this is **still blank** after G0/0 is up:
+
+1. `show interfaces fa0/24` → if **down/down**, fix the cable (straight-through to **Fa0/24**) or `no shutdown` on both ends.
+2. `show interfaces fa0/24 switchport` → if Admin Mode is **not** trunk, re-run the Step 1 trunk commands on the **connected** port.
+3. On R1: `show ip interface brief` → G0/0 must be **up/up**.
 
 On **PC0** and **PC1**: Desktop → IP Configuration → **DHCP**.
 
@@ -327,14 +433,23 @@ IP address       Client-ID/              Lease expiration        Type
 
 Before defenses, show why snooping exists.
 
-1. On **ATTACKER**, set a **static** IP in VLAN 10, e.g. `192.168.10.50/24`, gateway `192.168.10.1`.
-2. In Packet Tracer, open ATTACKER → **Services** → **DHCP** → turn the service **On**.
-   - Pool network: `192.168.10.0/24`
-   - Default gateway: `192.168.10.50` (attacker as gateway — classic rogue)
-   - Start IP: something like `192.168.10.100`
-3. On **PC0**: release/renew DHCP (`ipconfig /release` then `/renew` in Command Prompt, or toggle DHCP off/on in the GUI).
+**Use a Server-PT for ROGUE** — Packet Tracer **PC** devices do not include a DHCP **server** service. Only **Server-PT** (End Devices → Server) has **Services → DHCP**.
 
-**Observe:** PC0 may receive a lease from the **ATTACKER** (wrong gateway). That is the attack DHCP snooping is meant to stop.
+1. Drag a **Server** onto the workspace, name it `ROGUE`, connect it to SW1 **Fa0/2**.
+2. On **ROGUE** → **Desktop** → **IP Configuration** → set **static**:
+   - IP: `192.168.10.50`
+   - Mask: `255.255.255.0`
+   - Gateway: `192.168.10.1`
+3. On **ROGUE** → **Services** → **DHCP**:
+   - Service: **On**
+   - Pool name: e.g. `ROGUE-POOL`
+   - Default gateway: **`192.168.10.50`** (rogue as gateway — classic attack)
+   - Start IP: `192.168.10.100`
+   - Subnet mask: `255.255.255.0`
+   - Click **Add** / save the pool if your PT version requires it
+4. On **PC0**: release/renew DHCP (`ipconfig /release` then `/renew`, or toggle DHCP off/on in the GUI).
+
+**Observe:** PC0 may receive a lease from **ROGUE** (wrong gateway). That is the attack DHCP snooping is meant to stop.
 
 **Expected — PC0 `ipconfig` if the rogue wins (before snooping):**
 
@@ -346,9 +461,9 @@ Subnet Mask.....................: 255.255.255.0
 Default Gateway.................: 192.168.10.50
 ```
 
-**What to notice:** Gateway is **`192.168.10.50`** (ATTACKER), not `192.168.10.1` (R1). Ping to other VLANs / “internet” style paths will break or get redirected.
+**What to notice:** Gateway is **`192.168.10.50`** (ROGUE), not `192.168.10.1` (R1). Ping to other VLANs / “internet” style paths will break or get redirected.
 
-4. Turn ATTACKER DHCP **Off** again and renew PC0 so it gets a clean lease from R1 before Step 4. Confirm gateway is back to `192.168.10.1`.
+5. Turn ROGUE DHCP **Off** again (Services → DHCP → Off) and renew PC0 so it gets a clean lease from R1 before Step 4. Confirm gateway is back to `192.168.10.1`.
 
 ---
 
@@ -428,7 +543,7 @@ Total number of bindings: 2
 | PC0    | 10   | **Fa0/1** | `192.168.10.11+` |
 | PC1    | 20   | **Fa0/3** | `192.168.20.11+` |
 
-ATTACKER on Fa0/2 should **not** have a `dhcp-snooping` binding unless it also got a DHCP lease from R1 (this lab uses static on ATTACKER).
+ROGUE on Fa0/2 should **not** have a `dhcp-snooping` binding unless it also got a DHCP lease from R1 (this lab uses static on ROGUE).
 
 *(Packet Tracer may show MAC format as `0060.XXXX.XXXX` instead of colon notation — same idea.)*
 
@@ -436,10 +551,10 @@ ATTACKER on Fa0/2 should **not** have a `dhcp-snooping` binding unless it also g
 
 # Step 5: Prove Rogue DHCP Is Blocked
 
-1. Turn **ATTACKER** DHCP service **On** again (same bad gateway as Step 3).
+1. Turn **ROGUE** DHCP service **On** again (same bad gateway as Step 3).
 2. On **PC0**, release and renew DHCP.
 
-**Expected:** PC0 still gets (or keeps) a lease from **R1**, not from ATTACKER. Offers from Fa0/2 are dropped because the port is **untrusted**.
+**Expected:** PC0 still gets (or keeps) a lease from **R1**, not from ROGUE. Offers from Fa0/2 are dropped because the port is **untrusted**.
 
 **Expected — PC0 `ipconfig` after renew (snooping on, rogue DHCP on):**
 
@@ -472,7 +587,7 @@ Total number of bindings: 2
 
 Binding for PC0 should still map to **Fa0/1**, with an IP from R1’s pool (typically `.11`+ given your exclusions). There should be **no** binding that points PC0 at gateway `.50` or at Fa0/2 as the client port for a “good” lease from the attacker.
 
-4. Turn ATTACKER DHCP **Off** when done.
+4. Turn ROGUE DHCP **Off** when done.
 
 **What you learned:** Untrusted ports may send Discover/Request; server messages (Offer/Ack) from them are dropped.
 
@@ -589,11 +704,11 @@ Packet Tracer support for live ARP spoof tools varies by version. Use whichever 
 1. Open **Simulation** mode.
 2. Filter for **ARP** (and ICMP if useful).
 3. From PC0, `ping 192.168.10.1` and confirm ARP request/reply succeeds (legitimate).
-4. Mentally map: an ARP reply from ATTACKER claiming `192.168.10.1` with ATTACKER’s MAC would **not** match the binding for Fa0/2 → DAI drops it on an untrusted port.
+4. Mentally map: an ARP reply from ROGUE claiming `192.168.10.1` with ROGUE’s MAC would **not** match the binding for Fa0/2 → DAI drops it on an untrusted port.
 
 ### Option B — Force a mismatch (if your PT build allows)
 
-Some builds let you send gratuitous ARP from ATTACKER claiming the gateway IP. After attempting:
+Some builds let you send gratuitous ARP from ROGUE claiming the gateway IP. After attempting:
 
 ```cisco
 show ip arp inspection statistics
@@ -689,7 +804,7 @@ Total Addresses: 1
 **Violation test:**
 
 1. Disconnect PC0 from Fa0/1.
-2. Connect **ATTACKER** (or another PC) to Fa0/1 instead.
+2. Connect **ROGUE** (or another PC) to Fa0/1 instead.
 3. Generate traffic from the new device.
 
 **Expected:** Port goes **err-disabled** (violation shutdown).
@@ -773,7 +888,7 @@ Then watch `show port-security interface fa0/1` for **Security Violation Count**
 | DHCP (PC) | `ipconfig` on PC0/PC1 | Gateways `.10.1` / `.20.1` |
 | Snooping | `show ip dhcp snooping` | Enabled on 10,20; **only Fa0/24** trusted |
 | Bindings | `show ip dhcp snooping binding` | PC0→**Fa0/1**, PC1→**Fa0/3** |
-| Rogue DHCP | ATTACKER DHCP on; PC0 renew | Gateway still **192.168.10.1** (not `.50`) |
+| Rogue DHCP | ROGUE DHCP on; PC0 renew | Gateway still **192.168.10.1** (not `.50`) |
 | DAI | `show ip arp inspection` | 10,20 Enabled/Active; Fa0/24 has `ip arp inspection trust` |
 | DAI stats | `show ip arp inspection statistics` | Forwarded > 0 after pings; Dropped rises only on spoof |
 | Reachability | PC0 `ping 192.168.10.1` / `ping 192.168.20.11` | Replies |
@@ -829,6 +944,29 @@ interface fa0/1
 ## Scenario 5 – Cross-VLAN Ping Fails but Same-VLAN Works
 
 Router subinterface or trunk problem — not an L2 security feature. Check R1 `show ip interface brief` and SW1 trunk.
+
+## Scenario 6 – `show interfaces trunk` Is Blank
+
+Usually **not** a failed VLAN config. In Packet Tracer the trunk table stays empty until **R1 G0/0 is up** and the cable is on the port you trunked.
+
+Check in order:
+
+```cisco
+! On R1
+show ip interface brief
+
+! On SW1
+show interfaces fa0/24
+show interfaces fa0/24 switchport
+show interfaces trunk
+```
+
+| Result | Meaning |
+| ------ | ------- |
+| G0/0 down / Fa0/24 down | Cable or `no shutdown` — trunk table stays blank |
+| Admin Mode: trunk, Operational: down | Config OK; wait for link |
+| Admin Mode: dynamic auto / access | Trunk commands never applied — reconfigure that port |
+| Admin Mode: trunk, Operational: trunk, but `show interfaces trunk` blank | Rare PT glitch — save, close CLI, reopen; or trunk the port that `show interfaces status` shows as connected |
 
 ---
 
@@ -896,4 +1034,4 @@ After you finish, jot answers in your [README](../../README.md) journal:
 
 1. Why must the port toward R1 be trusted for both snooping and DAI?
 2. What table does DAI consult, and who builds it?
-3. If ATTACKER and PC0 swap cables, which feature(s) catch that — snooping, DAI, port security, or more than one?
+3. If ROGUE and PC0 swap cables, which feature(s) catch that — snooping, DAI, port security, or more than one?

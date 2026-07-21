@@ -35,6 +35,18 @@ Short entries are fine. Consistency matters more than length.
 
 ## Reflections
 
+### 2026-07-21 — Packet Tracer: PCs cannot run a DHCP server (Layer 2 Security Lab)
+
+**What I learned:** While building the rogue DHCP demo in the [Layer 2 Security Lab](labs/Layer2_Security_DHCP_Snooping_DAI/CCNA_Layer2_Security_Lab.md), I found that Packet Tracer **PC** devices do **not** support running a DHCP **server**. A PC can be a DHCP **client** (Desktop → IP Configuration → DHCP), but there is no **Services → DHCP** server to turn on like you might expect on a real compromised host.
+
+**What clicked:** For rogue-DHCP labs in PT, use a **Server-PT** instead (End Devices → Server). Give it a static IP (e.g. `192.168.10.50`), open **Services → DHCP**, turn the service **On**, and set a bad default gateway so clients that lease from it get redirected. Legitimate DHCP still comes from the router (or a trusted server); the Server-PT is only the attacker on an untrusted access port.
+
+**Still fuzzy:** How closely PT’s Server DHCP matches real IOS/`dhcpd` behavior (Option 82, race with multiple Offers) when testing snooping edge cases.
+
+**Next steps:** Finish the snooping “before vs after” demo with **ROGUE** as Server-PT; confirm PC0 keeps gateway `192.168.10.1` once Fa0/2 is untrusted.
+
+---
+
 ### 2026-06-04 — Access Control List (ACL) on a subinterface = Router-on-a-Stick (Small Office Lab)
 
 **What I learned:** In the [Small Office Network Lab](labs/CCNA_Small_Office_Network_Lab.md), putting an ACL on `**interface g0/0.20`** only works because **inter-VLAN routing** is already built with **router-on-a-stick**. One physical port (`g0/0`) trunks to the switch; each VLAN gets a **subinterface** (`g0/0.10`, `g0/0.20`, …) with `**encapsulation dot1Q`** and a **gateway IP** (e.g. `192.168.20.1` for Sales). PCs in different VLANs cannot talk at Layer 2 — they send to their **default gateway**, and the router routes between subnets.
