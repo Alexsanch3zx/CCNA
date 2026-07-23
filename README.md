@@ -35,6 +35,18 @@ Short entries are fine. Consistency matters more than length.
 
 ## Reflections
 
+### 2026-07-21 — Hub vs switch
+
+**What I learned:** A **hub** is a Layer 1 multiport repeater — it takes bits in on one port and **repeats them out every other port**. Everyone shares one big **collision domain**, so only one device should talk at a time (half-duplex / CSMA/CD thinking). A **switch** is Layer 2 — it reads **MAC addresses**, builds a **MAC address table**, and **forwards** a frame only toward the destination port when it knows where that MAC lives (flooding only for unknown/broadcast). Each switch port is typically its **own collision domain**, so full duplex is normal.
+
+**What clicked:** “Hub = dumb copy to all; switch = smart forward by MAC” is the exam-friendly version. That also explains why modern LANs use switches: less wasted bandwidth, fewer collisions, and features like VLANs, STP, and port security only make sense once you’re filtering by frame/MAC instead of blasting every port. Linking this to my MAC-table notes: the table is exactly what a hub does **not** have.
+
+**Still fuzzy:** When people say “broadcast domain” for a hub vs an unmanaged switch — both flood broadcasts by default; VLANs (or a router) are what split broadcast domains, not “switch vs hub” alone.
+
+**Next steps:** Skim [MAC-addresses.md](MAC-addresses.md) and [networking-basics.md](networking-basics.md); in Packet Tracer, contrast a hub topology (everyone sees every frame in Simulation) with a switch that unicast-forwards after learning.
+
+---
+
 ### 2026-07-21 — Wireless principles (BSS, ESS, SSID, roaming)
 
 **What I learned:** Wireless LANs still end up on a **wired** switch/router — the AP is a bridge between radio and Ethernet. A **BSS** is one AP and its clients (one cell). An **ESS** is two or more BSSs that share the **same SSID**, same security, and the same LAN/VLAN so a client can **roam** between APs and keep the same IP and gateway. The **SSID** is the network name people see; the **BSSID** is usually the AP radio’s MAC and identifies *which* cell you’re on. Non-overlapping channels (often **1, 6, 11** in 2.4 GHz) matter so neighboring APs don’t interfere.

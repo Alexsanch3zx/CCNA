@@ -1,0 +1,56 @@
+@startuml CCNA_IPv6_Configuration_Topology
+' CCNA IPv6 Configuration Lab — dual-site static routing
+' Render: plantuml labs/IPv6_Configuration/CCNA_IPv6_Configuration_Topology.puml
+' Or: https://www.plantuml.com/plantuml
+!theme plain
+top to bottom direction
+skinparam backgroundColor #FAFAFA
+skinparam shadowing false
+skinparam roundcorner 10
+skinparam defaultFontName Arial
+skinparam ArrowColor #37474F
+skinparam ArrowThickness 1.5
+skinparam nodesep 45
+skinparam ranksep 55
+
+title **CCNA IPv6 Configuration Lab**\nDual-Site | GUA + Link-Local | Static Routes | NDP | Optional SLAAC
+
+legend top
+  |= Color |= Segment | Prefix | Gateway |
+  | <#BBDEFB> | Site A LAN | 2001:db8:1::/64 | R1 2001:db8:1::1 |
+  | <#C8E6C9> | Site B LAN | 2001:db8:2::/64 | R2 2001:db8:2::1 |
+  | <#FFE0B2> | WAN R1↔R2 | 2001:db8:12::/64 | R1 ::1 / R2 ::2 |
+  ----
+  **GUA** = Global Unicast | **LLA** = Link-Local (FE80::) auto | **NDP** replaces ARP
+  **Must enable** `ipv6 unicast-routing` on R1 and R2
+endlegend
+
+' ═══════════ SITE A ═══════════
+package "Site A" #E3F2FD {
+  object "PC0\n2001:db8:1::10/64\nGW 2001:db8:1::1" as PC0 #BBDEFB
+  object "SW1 (2960)\nL2 only\nFa0/1 ↔ PC0\nFa0/24 ↔ R1" as SW1 #CFD8DC
+  object "R1 (2911)\nipv6 unicast-routing\nG0/0 2001:db8:1::1/64\nG0/1 2001:db8:12::1/64\nS → 2001:db8:2::/64 via ::2" as R1 #FFCCBC
+}
+
+' ═══════════ SITE B ═══════════
+package "Site B" #E8F5E9 {
+  object "PC1\n2001:db8:2::10/64\nGW 2001:db8:2::1" as PC1 #C8E6C9
+  object "SW2 (2960)\nL2 only\nFa0/1 ↔ PC1\nFa0/24 ↔ R2" as SW2 #CFD8DC
+  object "R2 (2911)\nipv6 unicast-routing\nG0/0 2001:db8:2::1/64\nG0/1 2001:db8:12::2/64\nS → 2001:db8:1::/64 via ::1" as R2 #FFCCBC
+}
+
+' ═══════════ LINKS ═══════════
+PC0 --> SW1 : Fa0 ↔ Fa0/1
+SW1 --> R1 : Fa0/24 ↔ Gig0/0\n**Site A LAN**\n2001:db8:1::/64
+R1 --> R2 : Gig0/1 ↔ Gig0/1\n**WAN**\n2001:db8:12::/64
+R2 --> SW2 : Gig0/0 ↔ Fa0/24\n**Site B LAN**\n2001:db8:2::/64
+SW2 --> PC1 : Fa0/1 ↔ Fa0
+
+note right of R1
+  After routes:
+  PC0 ↔ PC1 over IPv6
+  Verify: show ipv6 route
+  show ipv6 neighbors
+end note
+
+@enduml
