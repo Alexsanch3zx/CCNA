@@ -68,7 +68,12 @@ You will:
 
 **Story:** Two branch sites. Each site has one PC on a `/64` LAN. R1 and R2 share a point-to-point link. After you configure addresses, PCs can ping their own gateway. After you add static routes, PC0 can ping PC1 over IPv6.
 
-Topology diagram: [CCNA_IPv6_Configuration_Topology.puml](CCNA_IPv6_Configuration_Topology.puml) (same folder).
+**Full diagram:**
+
+- Source: [CCNA_IPv6_Configuration_Topology.puml](CCNA_IPv6_Configuration_Topology.puml)
+- Image: [CCNA_IPv6_Configuration_Topology.png](CCNA_IPv6_Configuration_Topology.png)
+
+Render PNG: `plantuml labs/IPv6_Configuration/CCNA_IPv6_Configuration_Topology.puml` or paste the `.puml` into [PlantUML online](https://www.plantuml.com/plantuml).
 
 ---
 
