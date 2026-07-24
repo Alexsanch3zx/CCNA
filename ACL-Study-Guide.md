@@ -2,7 +2,7 @@
 
 **Audience:** CCNA students who need to understand **standard vs extended ACLs**, **inbound vs outbound** direction, **named vs numbered** lists, wildcard masks, and the **implicit deny**.
 
-**Related files:** [terminology.md](terminology.md) · [IP-addresses/subnetting.md](IP-addresses/subnetting.md) · [IP-addresses/NAT_PAT_Notes.md](IP-addresses/NAT_PAT_Notes.md) · [inter_vlan_routing.md](inter_vlan_routing.md) · [cheat-sheets/command-cheat-sheet.md](cheat-sheets/command-cheat-sheet.md) · [labs/CCNA_Small_Office_Network_Lab.md](labs/CCNA_Small_Office_Network_Lab.md) · [labs/ACL_Router-on-a-stick_VLAN/CCNA_ACL_Lab.md](labs/ACL_Router-on-a-stick_VLAN/CCNA_ACL_Lab.md) · [labs/CCNA_Multi_Site_OSPF_NAT_Lab.md](labs/CCNA_Multi_Site_OSPF_NAT_Lab.md)
+**Related files:** [terminology.md](terminology.md) · [IP-addresses/subnetting.md](IP-addresses/subnetting.md) · [IP-addresses/NAT_PAT_Notes.md](IP-addresses/NAT_PAT_Notes.md) · [inter_vlan_routing.md](inter_vlan_routing.md) · [cheat-sheets/command-cheat-sheet.md](cheat-sheets/command-cheat-sheet.md) · [labs/CCNA_Small_Office_Network_Lab.md](labs/CCNA_Small_Office_Network_Lab.md) · [labs/ACL_Router-on-a-stick_VLAN/CCNA_ACL_Lab.md](labs/ACL_Router-on-a-stick_VLAN/CCNA_ACL_Lab.md) · [labs/ACL_Port_Security/CCNA_ACL_Port_Security_Lab.md](labs/ACL_Port_Security/CCNA_ACL_Port_Security_Lab.md) · [labs/CCNA_Multi_Site_OSPF_NAT_Lab.md](labs/CCNA_Multi_Site_OSPF_NAT_Lab.md)
 
 ---
 
