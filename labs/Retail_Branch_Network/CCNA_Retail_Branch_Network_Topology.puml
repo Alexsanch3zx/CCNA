@@ -1,0 +1,127 @@
+@startuml CCNA_Retail_Branch_Network_Topology
+' CCNA Retail Branch Network Lab — full topology
+' Render: plantuml labs/Retail_Branch_Network/CCNA_Retail_Branch_Network_Topology.puml
+' Or: https://www.plantuml.com/plantuml
+!theme plain
+top to bottom direction
+skinparam backgroundColor #FAFAFA
+skinparam shadowing false
+skinparam roundcorner 10
+skinparam defaultFontName Arial
+skinparam ArrowColor #37474F
+skinparam ArrowThickness 1.5
+skinparam nodesep 40
+skinparam ranksep 50
+
+title **CCNA Retail Branch Network Lab**\nRouter-on-a-Stick | 4 VLANs | DHCP | DNS | HTTP | Guest ACL | PAT to ISP
+
+legend top
+  |= Color |= VLAN | Network | Gateway |
+  | <#BBDEFB> | 10 Staff | 10.10.10.0/24 | 10.10.10.1 |
+  | <#C8E6C9> | 20 POS | 10.10.20.0/24 | 10.10.20.1 |
+  | <#FFE0B2> | 30 Servers | 10.10.30.0/24 | 10.10.30.1 |
+  | <#E1BEE7> | 40 Guest | 10.10.40.0/24 | 10.10.40.1 |
+  | <#FFCDD2> | WAN / ISP | 203.0.113.0/30 + .8/29 | — |
+  ----
+  **Access** = one VLAN, untagged | **Trunk** = 802.1Q, all VLANs | **dot1Q** = router subinterface tag
+  **DHCP** on R1 | **DNS/HTTP** on Server0 (`store.local`) | **GUEST-FILTER** on Gig0/0.40 in
+  **PAT** overload on Gig0/1 | **Default route** → 203.0.113.2 | **Port security** SW1 Fa0/1
+endlegend
+
+' ═══════════ ISP ═══════════
+package "R2 (2911) — ISP Stub" #FFCDD2 {
+  object "Gig0/0\n203.0.113.2/30\nWAN to R1" as R2_WAN #FFFFFF
+  object "Gig0/1\n203.0.113.9/29\nISP LAN" as R2_LAN #FFFFFF
+}
+
+object "Server1\n203.0.113.10/29\nHTTP (Internet target)" as ISPSRV #FFCDD2
+
+' ═══════════ BRANCH ROUTER ═══════════
+package "R1 (2911) — RoAS + PAT" #FFCCBC {
+  object "Gig0/1\n203.0.113.1/30\nip nat outside\ndefault via .2" as R1_WAN #FFCDD2
+  object "Gig0/0\n(physical)\nno IP | no shutdown" as R1_PHY #FFFFFF
+  together {
+    object "Gig0/0.10\ndot1Q 10\n10.10.10.1/24\nip nat inside" as R1_10 #BBDEFB
+    object "Gig0/0.20\ndot1Q 20\n10.10.20.1/24\nip nat inside" as R1_20 #C8E6C9
+    object "Gig0/0.30\ndot1Q 30\n10.10.30.1/24\nip nat inside" as R1_30 #FFE0B2
+    object "Gig0/0.40\ndot1Q 40\n10.10.40.1/24\nip nat inside\nGUEST-FILTER in" as R1_40 #E1BEE7
+  }
+  R1_PHY -[hidden]down- R1_10
+  R1_WAN -[hidden]down- R1_PHY
+}
+
+' ═══════════ SWITCH 1 ═══════════
+package "SW1 (2960)" #CFD8DC {
+  object "Fa0/24\nTRUNK → R1" as SW1_24 #B0BEC5
+  object "Fa0/23\nTRUNK → SW2" as SW1_23 #B0BEC5
+  object "Fa0/1 Access VLAN10\nPort Security" as SW1_1 #BBDEFB
+  object "Fa0/2 Access VLAN10" as SW1_2 #BBDEFB
+}
+
+' ═══════════ SWITCH 2 ═══════════
+package "SW2 (2960)" #CFD8DC {
+  object "Fa0/23\nTRUNK → SW1" as SW2_23 #B0BEC5
+  object "Fa0/1 Access VLAN20" as SW2_1 #C8E6C9
+  object "Fa0/2 Access VLAN40" as SW2_2 #E1BEE7
+  object "Fa0/3 Access VLAN30" as SW2_3 #FFE0B2
+}
+
+' ═══════════ END DEVICES ═══════════
+together {
+  object "PC0\nVLAN10 Staff\nDHCP\nGW .10.1" as PC0 #BBDEFB
+  object "PC1\nVLAN10 Staff\nDHCP\nGW .10.1" as PC1 #BBDEFB
+}
+object "PC2\nVLAN20 POS\nDHCP\nGW .20.1" as PC2 #C8E6C9
+object "PC3\nVLAN40 Guest\nDHCP\nGW .40.1\nNo internal access" as PC3 #E1BEE7
+object "Server0\nVLAN30\n10.10.30.10 static\nDNS + HTTP\nstore.local" as SRV #FFE0B2
+
+' ═══════════ LINKS ═══════════
+ISPSRV --> R2_LAN : Fa0 ↔ Gig0/1
+R2_WAN --> R1_WAN : **WAN /30**\nGig0/0 ↔ Gig0/1\n203.0.113.2 ↔ .1
+R1_PHY --> SW1_24 : **Trunk**\nGig0/0 ↔ Fa0/24\n802.1Q all VLANs
+SW1_23 --> SW2_23 : **Trunk**\nFa0/23 ↔ Fa0/23\n802.1Q VLANs 10–40
+
+SW1_1 --> PC0 : Fa0/1 ↔ Fa0
+SW1_2 --> PC1 : Fa0/2 ↔ Fa0
+SW2_1 --> PC2 : Fa0/1 ↔ Fa0
+SW2_2 --> PC3 : Fa0/2 ↔ Fa0
+SW2_3 --> SRV : Fa0/3 ↔ Fa0
+
+' ═══════════ NOTES ═══════════
+note right of R1_PHY
+  **Router-on-a-Stick + PAT**
+  ----
+  1. One cable: Gig0/0 → SW1 Fa0/24 (**trunk**)
+  2. Subinterface per VLAN (dot1Q + gateway IP)
+  3. Cross-VLAN traffic **must** pass R1
+  4. Gig0/1 = **outside**; LAN subifs = **inside**
+  5. `ip nat inside source list 1 interface g0/1 overload`
+end note
+
+note bottom of R1_40
+  **GUEST-FILTER**
+  Deny Guest → Staff / POS / Servers
+  Permit everything else (Internet via PAT)
+end note
+
+note bottom of SRV
+  **Internal services**
+  DNS: store.local → 10.10.30.10
+  HTTP: port 80
+  DHCP pools on **R1** for Staff / POS / Guest
+end note
+
+note as CABLING
+  **Cabling (copper straight-through)**
+  ----
+  R1 Gig0/0 ↔ SW1 Fa0/24
+  R1 Gig0/1 ↔ R2 Gig0/0
+  R2 Gig0/1 ↔ Server1
+  SW1 Fa0/1 ↔ PC0 | SW1 Fa0/2 ↔ PC1
+  SW1 Fa0/23 ↔ SW2 Fa0/23
+  SW2 Fa0/1 ↔ PC2 | SW2 Fa0/2 ↔ PC3 | SW2 Fa0/3 ↔ Server0
+end note
+
+CABLING .. SW2_3
+
+@enduml
