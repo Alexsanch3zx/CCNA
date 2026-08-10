@@ -1,6 +1,6 @@
 @startuml CCNA_Small_Office_Network_Topology
 ' CCNA Small Office Network Lab — full topology
-' Render: plantuml labs/CCNA_Small_Office_Network_Topology.puml
+' Render: plantuml labs/Small_Office_Network/CCNA_Small_Office_Network_Topology.puml
 ' Or: https://www.plantuml.com/plantuml
 !theme plain
 top to bottom direction

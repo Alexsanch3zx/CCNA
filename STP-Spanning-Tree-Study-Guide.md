@@ -2,7 +2,7 @@
 
 **Audience:** CCNA students who need to understand **Layer 2 loop prevention**, root bridge election, port roles/states, and Cisco’s **per-VLAN** STP modes.
 
-**Related files:** [terminology.md](terminology.md) · [MAC-addresses.md](MAC-addresses.md) · [inter_vlan_routing.md](inter_vlan_routing.md) · [cheat-sheets/command-cheat-sheet.md](cheat-sheets/command-cheat-sheet.md) · [labs/CCNA_Layer3_Switching_Redundancy_Lab.md](labs/CCNA_Layer3_Switching_Redundancy_Lab.md) · [labs/CCNA_Small_Office_Network_Lab.md](labs/CCNA_Small_Office_Network_Lab.md)
+**Related files:** [terminology.md](terminology.md) · [MAC-addresses.md](MAC-addresses.md) · [inter_vlan_routing.md](inter_vlan_routing.md) · [cheat-sheets/command-cheat-sheet.md](cheat-sheets/command-cheat-sheet.md) · [labs/Layer3_Switching_Redundancy/CCNA_Layer3_Switching_Redundancy_Lab.md](labs/Layer3_Switching_Redundancy/CCNA_Layer3_Switching_Redundancy_Lab.md) · [labs/Small_Office_Network/CCNA_Small_Office_Network_Lab.md](labs/Small_Office_Network/CCNA_Small_Office_Network_Lab.md)
 
 ---
 
@@ -210,7 +210,7 @@ Look for:
 3. **Port states** — FWD vs BLK / discarding
 4. **Protocol** — `ieee` / `rstp` / Rapid PVST indication depending on platform output
 
-**Lab tip:** In [CCNA_Small_Office_Network_Lab.md](labs/CCNA_Small_Office_Network_Lab.md) you mostly **read** STP. In [CCNA_Layer3_Switching_Redundancy_Lab.md](labs/CCNA_Layer3_Switching_Redundancy_Lab.md) you practice **root placement**, PortFast, and BPDU Guard with redundant paths.
+**Lab tip:** In [CCNA_Small_Office_Network_Lab.md](labs/Small_Office_Network/CCNA_Small_Office_Network_Lab.md) you mostly **read** STP. In [CCNA_Layer3_Switching_Redundancy_Lab.md](labs/Layer3_Switching_Redundancy/CCNA_Layer3_Switching_Redundancy_Lab.md) you practice **root placement**, PortFast, and BPDU Guard with redundant paths.
 
 ---
 

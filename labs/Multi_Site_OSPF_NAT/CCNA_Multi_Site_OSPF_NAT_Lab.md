@@ -138,7 +138,7 @@ Rename devices in Packet Tracer: `R-HQ`, `R-Branch`, `R-ISP`, `SW-HQ`, `SW-Branc
 - Source: [CCNA_Multi_Site_OSPF_NAT_Topology.puml](CCNA_Multi_Site_OSPF_NAT_Topology.puml)
 - Image: [CCNA_Multi_Site_OSPF_NAT_Topology.png](CCNA_Multi_Site_OSPF_NAT_Topology.png)
 
-Render PNG: `plantuml labs/CCNA_Multi_Site_OSPF_NAT_Topology.puml` or paste the `.puml` file into [PlantUML online](https://www.plantuml.com/plantuml).
+Render PNG: `plantuml labs/Multi_Site_OSPF_NAT/CCNA_Multi_Site_OSPF_NAT_Topology.puml` or paste the `.puml` file into [PlantUML online](https://www.plantuml.com/plantuml).
 
 ---
 

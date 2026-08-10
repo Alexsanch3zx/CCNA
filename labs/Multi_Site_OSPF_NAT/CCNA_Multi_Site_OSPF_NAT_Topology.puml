@@ -1,6 +1,6 @@
 @startuml CCNA_Multi_Site_OSPF_NAT_Topology
 ' CCNA Multi-Site OSPF & NAT Lab — full topology
-' Render: plantuml labs/CCNA_Multi_Site_OSPF_NAT_Topology.puml
+' Render: plantuml labs/Multi_Site_OSPF_NAT/CCNA_Multi_Site_OSPF_NAT_Topology.puml
 ' Or: https://www.plantuml.com/plantuml
 !theme plain
 left to right direction

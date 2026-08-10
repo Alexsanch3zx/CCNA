@@ -4,7 +4,7 @@
 
 **Folder:** `redundancy/` — high-availability gateway topics (pairs with STP/EtherChannel physical redundancy).
 
-**Related files:** [../terminology.md](../terminology.md) · [../MAC-addresses.md](../MAC-addresses.md) · [../inter_vlan_routing.md](../inter_vlan_routing.md) · [../cheat-sheets/command-cheat-sheet.md](../cheat-sheets/command-cheat-sheet.md) · [../labs/CCNA_Layer3_Switching_Redundancy_Lab.md](../labs/CCNA_Layer3_Switching_Redundancy_Lab.md)
+**Related files:** [../terminology.md](../terminology.md) · [../MAC-addresses.md](../MAC-addresses.md) · [../inter_vlan_routing.md](../inter_vlan_routing.md) · [../cheat-sheets/command-cheat-sheet.md](../cheat-sheets/command-cheat-sheet.md) · [../labs/Layer3_Switching_Redundancy/CCNA_Layer3_Switching_Redundancy_Lab.md](../labs/Layer3_Switching_Redundancy/CCNA_Layer3_Switching_Redundancy_Lab.md)
 
 ---
 
@@ -207,7 +207,7 @@ Verify: `show glbp`, `show glbp brief`
 
 ## Part 8 — Lab Tie-In
 
-In [CCNA_Layer3_Switching_Redundancy_Lab.md](../labs/CCNA_Layer3_Switching_Redundancy_Lab.md):
+In [CCNA_Layer3_Switching_Redundancy_Lab.md](../labs/Layer3_Switching_Redundancy/CCNA_Layer3_Switching_Redundancy_Lab.md):
 
 - Two multilayer switches (`DLSW1` / `DLSW2`) already give redundant L2/L3 paths
 - Stretch goal: **HSRP on SVIs** so `.1` floats between switches

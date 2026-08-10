@@ -77,7 +77,7 @@ That saves the config so it survives a reload.
 - Source: [CCNA_Small_Office_Network_Topology.puml](CCNA_Small_Office_Network_Topology.puml)
 - Image: [CCNA_Small_Office_Network_Topology.png](CCNA_Small_Office_Network_Topology.png)
 
-Render PNG: `plantuml labs/CCNA_Small_Office_Network_Topology.puml` or paste the `.puml` file into [PlantUML online](https://www.plantuml.com/plantuml).
+Render PNG: `plantuml labs/Small_Office_Network/CCNA_Small_Office_Network_Topology.puml` or paste the `.puml` file into [PlantUML online](https://www.plantuml.com/plantuml).
 
 ---
 

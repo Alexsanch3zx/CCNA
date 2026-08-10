@@ -2,7 +2,7 @@
 
 **Do steps in order.** After each CLI step, run **`write memory`** on that device. Save your `.pkt` when done.
 
-This lab is the same **style** as the [Small Office Network Lab](../CCNA_Small_Office_Network_Lab.md) (VLANs, trunks, router-on-a-stick, DHCP, DNS/HTTP, ACL, port security), with a **retail branch** story plus two new skills:
+This lab is the same **style** as the [Small Office Network Lab](../Small_Office_Network/CCNA_Small_Office_Network_Lab.md) (VLANs, trunks, router-on-a-stick, DHCP, DNS/HTTP, ACL, port security), with a **retail branch** story plus two new skills:
 
 - **Guest VLAN isolation** — guests cannot reach Staff, POS, or Servers
 - **PAT to an ISP stub** — Staff/POS/Guest reach a simulated Internet via overload NAT

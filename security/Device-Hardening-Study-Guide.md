@@ -4,7 +4,7 @@
 
 **Folder:** `security/` — pairs with [Layer-2-Security-Study-Guide.md](Layer-2-Security-Study-Guide.md) (data-plane L2) and [../ACL-Study-Guide.md](../ACL-Study-Guide.md) (traffic filters).
 
-**Related files:** [../terminology.md](../terminology.md) · [../cheat-sheets/command-cheat-sheet.md](../cheat-sheets/command-cheat-sheet.md) · [../labs/CCNA_Multi_Site_OSPF_NAT_Lab.md](../labs/CCNA_Multi_Site_OSPF_NAT_Lab.md) · [../CCNA-Networking-Study-Guide.md](../CCNA-Networking-Study-Guide.md)
+**Related files:** [../terminology.md](../terminology.md) · [../cheat-sheets/command-cheat-sheet.md](../cheat-sheets/command-cheat-sheet.md) · [../labs/Multi_Site_OSPF_NAT/CCNA_Multi_Site_OSPF_NAT_Lab.md](../labs/Multi_Site_OSPF_NAT/CCNA_Multi_Site_OSPF_NAT_Lab.md) · [../CCNA-Networking-Study-Guide.md](../CCNA-Networking-Study-Guide.md)
 
 ---
 
@@ -163,7 +163,7 @@ line vty 0 4
  access-class MGMT in
 ```
 
-**Lab mirror:** SSH + VTY pattern in [CCNA_Multi_Site_OSPF_NAT_Lab.md](../labs/CCNA_Multi_Site_OSPF_NAT_Lab.md) Step 9.
+**Lab mirror:** SSH + VTY pattern in [CCNA_Multi_Site_OSPF_NAT_Lab.md](../labs/Multi_Site_OSPF_NAT/CCNA_Multi_Site_OSPF_NAT_Lab.md) Step 9.
 
 Also set:
 

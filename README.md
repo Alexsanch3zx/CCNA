@@ -67,7 +67,7 @@ Short entries are fine. Consistency matters more than length.
 
 **Still fuzzy:** Whether sticky MACs survive a reload without saving them into the running/startup config the way I expect in Packet Tracer vs real IOS.
 
-**Next steps:** Finish the port-security violation demo in the [Layer 2 Security Lab](labs/Layer2_Security_DHCP_Snooping_DAI/CCNA_Layer2_Security_Lab.md); compare with the earlier pass in the [Small Office Network Lab](labs/CCNA_Small_Office_Network_Lab.md); practice `show port-security address` after sticky learning.
+**Next steps:** Finish the port-security violation demo in the [Layer 2 Security Lab](labs/Layer2_Security_DHCP_Snooping_DAI/CCNA_Layer2_Security_Lab.md); compare with the earlier pass in the [Small Office Network Lab](labs/Small_Office_Network/CCNA_Small_Office_Network_Lab.md); practice `show port-security address` after sticky learning.
 
 ---
 
@@ -79,7 +79,7 @@ Short entries are fine. Consistency matters more than length.
 
 **Still fuzzy:** Quickly picking **root port vs designated port** on a diagram under time pressure, and when to use `spanning-tree vlan X root primary` vs setting priority by hand.
 
-**Next steps:** Re-read [MAC-addresses.md](MAC-addresses.md) and [STP-Spanning-Tree-Study-Guide.md](STP-Spanning-Tree-Study-Guide.md); in the [Layer 3 Switching / EtherChannel lab](labs/CCNA_Layer3_Switching_Redundancy_Lab.md), force a root and watch a port block, then check the MAC table before and after breaking a link.
+**Next steps:** Re-read [MAC-addresses.md](MAC-addresses.md) and [STP-Spanning-Tree-Study-Guide.md](STP-Spanning-Tree-Study-Guide.md); in the [Layer 3 Switching / EtherChannel lab](labs/Layer3_Switching_Redundancy/CCNA_Layer3_Switching_Redundancy_Lab.md), force a root and watch a port block, then check the MAC table before and after breaking a link.
 
 ---
 
@@ -97,7 +97,7 @@ Short entries are fine. Consistency matters more than length.
 
 ### 2026-06-04 — Access Control List (ACL) on a subinterface = Router-on-a-Stick (Small Office Lab)
 
-**What I learned:** In the [Small Office Network Lab](labs/CCNA_Small_Office_Network_Lab.md), putting an ACL on `**interface g0/0.20`** only works because **inter-VLAN routing** is already built with **router-on-a-stick**. One physical port (`g0/0`) trunks to the switch; each VLAN gets a **subinterface** (`g0/0.10`, `g0/0.20`, …) with `**encapsulation dot1Q`** and a **gateway IP** (e.g. `192.168.20.1` for Sales). PCs in different VLANs cannot talk at Layer 2 — they send to their **default gateway**, and the router routes between subnets.
+**What I learned:** In the [Small Office Network Lab](labs/Small_Office_Network/CCNA_Small_Office_Network_Lab.md), putting an ACL on `**interface g0/0.20`** only works because **inter-VLAN routing** is already built with **router-on-a-stick**. One physical port (`g0/0`) trunks to the switch; each VLAN gets a **subinterface** (`g0/0.10`, `g0/0.20`, …) with `**encapsulation dot1Q`** and a **gateway IP** (e.g. `192.168.20.1` for Sales). PCs in different VLANs cannot talk at Layer 2 — they send to their **default gateway**, and the router routes between subnets.
 
 **What clicked:** Applying the ACL to `**g0/0.20 in`** means traffic **from Sales entering the router** is filtered before it can reach HR or other VLANs. Router-on-a-stick makes the router the **only path** between VLANs, so ACLs on subinterfaces are a logical place to enforce policy.
 
@@ -156,13 +156,13 @@ The **-2** is because the **network address** (host bits all 0) and **broadcast*
 
 **Still fuzzy:** When the DHCP server is on a **different subnet** than the clients — I need `**ip helper-address`** on the router to relay broadcasts (not needed when R1 is the server and default gateway for each VLAN in my small office lab).
 
-**Next steps:** Run `show ip dhcp binding` on R1 after PCs lease; re-read [DHCP_Notes.md](IP-addresses/DHCP_Notes.md); finish DHCP step in [Small Office Network Lab](labs/CCNA_Small_Office_Network_Lab.md).
+**Next steps:** Run `show ip dhcp binding` on R1 after PCs lease; re-read [DHCP_Notes.md](IP-addresses/DHCP_Notes.md); finish DHCP step in [Small Office Network Lab](labs/Small_Office_Network/CCNA_Small_Office_Network_Lab.md).
 
 ---
 
 ### 2026-06-02 — What `Fa0/23` means
 
-**What I learned:** On a Cisco switch, `**Fa0/23`** is interface notation: `**Fa`** = FastEthernet, `**0`** = module/slot (on a 2960-style switch this is usually fixed at 0), `**23**` = port number. So it is **port 23** on the FastEthernet module — not “port 0 and port 23.” In the [Small Office Network Lab](labs/CCNA_Small_Office_Network_Lab.md), **SW1 Fa0/23** connects to **SW2 Fa0/23** as the **trunk** between switches.
+**What I learned:** On a Cisco switch, `**Fa0/23`** is interface notation: `**Fa`** = FastEthernet, `**0`** = module/slot (on a 2960-style switch this is usually fixed at 0), `**23**` = port number. So it is **port 23** on the FastEthernet module — not “port 0 and port 23.” In the [Small Office Network Lab](labs/Small_Office_Network/CCNA_Small_Office_Network_Lab.md), **SW1 Fa0/23** connects to **SW2 Fa0/23** as the **trunk** between switches.
 
 **What clicked:** The slash separates **where** on the device (slot) from **which port** on that module.
 
@@ -182,7 +182,7 @@ The **-2** is because the **network address** (host bits all 0) and **broadcast*
 
 **Still fuzzy:** Native VLAN mismatches on trunks and when I need `switchport trunk native vlan` vs leaving default.
 
-**Next steps:** Finish [Small Office Network Lab](labs/CCNA_Small_Office_Network_Lab.md); practice `show vlan brief` and `show interfaces trunk`.
+**Next steps:** Finish [Small Office Network Lab](labs/Small_Office_Network/CCNA_Small_Office_Network_Lab.md); practice `show vlan brief` and `show interfaces trunk`.
 
 ---
 

@@ -2,7 +2,7 @@
 
 **Audience:** CCNA students who need to understand **standard vs extended ACLs**, **inbound vs outbound** direction, **named vs numbered** lists, wildcard masks, and the **implicit deny**.
 
-**Related files:** [terminology.md](terminology.md) · [IP-addresses/subnetting.md](IP-addresses/subnetting.md) · [IP-addresses/NAT_PAT_Notes.md](IP-addresses/NAT_PAT_Notes.md) · [inter_vlan_routing.md](inter_vlan_routing.md) · [cheat-sheets/command-cheat-sheet.md](cheat-sheets/command-cheat-sheet.md) · [labs/CCNA_Small_Office_Network_Lab.md](labs/CCNA_Small_Office_Network_Lab.md) · [labs/ACL_Router-on-a-stick_VLAN/CCNA_ACL_Lab.md](labs/ACL_Router-on-a-stick_VLAN/CCNA_ACL_Lab.md) · [labs/ACL_Port_Security/CCNA_ACL_Port_Security_Lab.md](labs/ACL_Port_Security/CCNA_ACL_Port_Security_Lab.md) · [labs/CCNA_Multi_Site_OSPF_NAT_Lab.md](labs/CCNA_Multi_Site_OSPF_NAT_Lab.md)
+**Related files:** [terminology.md](terminology.md) · [IP-addresses/subnetting.md](IP-addresses/subnetting.md) · [IP-addresses/NAT_PAT_Notes.md](IP-addresses/NAT_PAT_Notes.md) · [inter_vlan_routing.md](inter_vlan_routing.md) · [cheat-sheets/command-cheat-sheet.md](cheat-sheets/command-cheat-sheet.md) · [labs/Small_Office_Network/CCNA_Small_Office_Network_Lab.md](labs/Small_Office_Network/CCNA_Small_Office_Network_Lab.md) · [labs/ACL_Router-on-a-stick_VLAN/CCNA_ACL_Lab.md](labs/ACL_Router-on-a-stick_VLAN/CCNA_ACL_Lab.md) · [labs/ACL_Port_Security/CCNA_ACL_Port_Security_Lab.md](labs/ACL_Port_Security/CCNA_ACL_Port_Security_Lab.md) · [labs/Multi_Site_OSPF_NAT/CCNA_Multi_Site_OSPF_NAT_Lab.md](labs/Multi_Site_OSPF_NAT/CCNA_Multi_Site_OSPF_NAT_Lab.md)
 
 ---
 
@@ -97,7 +97,7 @@ interface g0/2
  ip access-group GUEST-FILTER in
 ```
 
-**Lab mirror:** [CCNA_Multi_Site_OSPF_NAT_Lab.md](labs/CCNA_Multi_Site_OSPF_NAT_Lab.md) Step 8 (`GUEST-FILTER`).
+**Lab mirror:** [CCNA_Multi_Site_OSPF_NAT_Lab.md](labs/Multi_Site_OSPF_NAT/CCNA_Multi_Site_OSPF_NAT_Lab.md) Step 8 (`GUEST-FILTER`).
 
 ### Named standard example
 
@@ -343,4 +343,4 @@ Verify: show access-lists (watch hit counts)
 
 ---
 
-**Mastery check:** Rebuild the Sales→HR deny from the [small office lab](labs/CCNA_Small_Office_Network_Lab.md) from memory, predict which ping fails, then confirm with `show access-lists` hit counts — direction + first-match + implicit deny all in one test.
+**Mastery check:** Rebuild the Sales→HR deny from the [small office lab](labs/Small_Office_Network/CCNA_Small_Office_Network_Lab.md) from memory, predict which ping fails, then confirm with `show access-lists` hit counts — direction + first-match + implicit deny all in one test.

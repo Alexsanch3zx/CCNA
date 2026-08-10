@@ -2,7 +2,7 @@
 
 **Audience:** CCNA students who need to understand **why address translation exists**, the four NAT address types, static vs dynamic vs **PAT (overload)**, and how to verify translations.
 
-**Related files:** [terminology.md](../terminology.md) · [subnetting.md](subnetting.md) · [IPv4_vs_IPv6_Study_Guide.md](IPv4_vs_IPv6_Study_Guide.md) · [ACL-Study-Guide.md](../ACL-Study-Guide.md) · [command-cheat-sheet.md](../cheat-sheets/command-cheat-sheet.md) · [CCNA_Multi_Site_OSPF_NAT_Lab.md](../labs/CCNA_Multi_Site_OSPF_NAT_Lab.md) · [projects.md](../labs/projects.md)
+**Related files:** [terminology.md](../terminology.md) · [subnetting.md](subnetting.md) · [IPv4_vs_IPv6_Study_Guide.md](IPv4_vs_IPv6_Study_Guide.md) · [ACL-Study-Guide.md](../ACL-Study-Guide.md) · [command-cheat-sheet.md](../cheat-sheets/command-cheat-sheet.md) · [CCNA_Multi_Site_OSPF_NAT_Lab.md](../labs/Multi_Site_OSPF_NAT/CCNA_Multi_Site_OSPF_NAT_Lab.md) · [projects.md](../labs/projects.md)
 
 ---
 
@@ -107,7 +107,7 @@ ip nat inside source list 1 interface s0/0/1 overload
 
 **`overload`** = PAT.
 
-**Lab mirror:** Same pattern as [CCNA_Multi_Site_OSPF_NAT_Lab.md](../labs/CCNA_Multi_Site_OSPF_NAT_Lab.md) Step 7.
+**Lab mirror:** Same pattern as [CCNA_Multi_Site_OSPF_NAT_Lab.md](../labs/Multi_Site_OSPF_NAT/CCNA_Multi_Site_OSPF_NAT_Lab.md) Step 7.
 
 ---
 
@@ -280,4 +280,4 @@ Verify:
 
 ---
 
-**Mastery check:** In the [multi-site OSPF/NAT lab](../labs/CCNA_Multi_Site_OSPF_NAT_Lab.md), ping the ISP host from an inside PC, then immediately run `show ip nat translations` and name each of the four address fields out loud.
+**Mastery check:** In the [multi-site OSPF/NAT lab](../labs/Multi_Site_OSPF_NAT/CCNA_Multi_Site_OSPF_NAT_Lab.md), ping the ISP host from an inside PC, then immediately run `show ip nat translations` and name each of the four address fields out loud.
